@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>E SE...? | Histórias do Tabocal</title>
+  <meta name="description" content="Série E SE...? do perfil Histórias do Tabocal — experiência audiovisual animada em 9:16.">
+  <link rel="stylesheet" href="css/style.css">
+  <script type="importmap">{ "imports": { "three": "./vendor/three.module.min.js" } }</script>
+</head>
+<body>
+  <main id="app">
+    <div id="frame">
+      <canvas id="screen" aria-label="Episódio animado"></canvas>
+
+      <!-- carregamento -->
+      <div id="loader" class="overlay">
+        <div class="brand"><span class="small">HISTÓRIAS DO</span><span class="big">TABOCAL</span><span class="tag">E SE...?</span></div>
+        <div class="bar"><i id="loadBar"></i></div>
+        <p id="loadText">Carregando…</p>
+      </div>
+
+      <!-- botão central -->
+      <button id="bigPlay" class="hidden" aria-label="Reproduzir">
+        <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+      </button>
+
+      <!-- controles -->
+      <div id="controls" class="hidden">
+        <div id="seek"><div id="seekFill"></div></div>
+        <div class="row">
+          <button id="btnPlay" aria-label="Reproduzir/pausar"><svg viewBox="0 0 24 24"><path id="playIcon" d="M8 5v14l11-7z"/></svg></button>
+          <button id="btnRestart" aria-label="Reiniciar"><svg viewBox="0 0 24 24"><path d="M12 5V2L7 6l5 4V7a5 5 0 1 1-5 5H5a7 7 0 1 0 7-7z"/></svg></button>
+          <span id="time">0:00 / 0:00</span>
+          <span class="spacer"></span>
+          <button id="btnWav" class="pill" title="Exportar a mixagem de áudio (narração + trilha + efeitos) em WAV">♪ WAV</button>
+          <button id="btnRec" class="pill" title="Gravar o episódio em vídeo (tempo real)">● Gravar</button>
+          <button id="btnFull" aria-label="Tela cheia"><svg viewBox="0 0 24 24"><path d="M5 5h5v2H7v3H5zm9 0h5v5h-2V7h-3zM5 14h2v3h3v2H5zm12 3v-3h2v5h-5v-2z"/></svg></button>
+        </div>
+      </div>
+
+      <div id="recBadge" class="hidden">● REC</div>
+      <div id="drop" class="overlay hidden"><p>Solte os arquivos de narração<br><small>L01.mp3, L02.mp3 … e timings.json (opcional)</small></p></div>
+    </div>
+
+    <!-- status de produção (fora do quadro do vídeo; não aparece na gravação) -->
+    <aside id="status"></aside>
+  </main>
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
