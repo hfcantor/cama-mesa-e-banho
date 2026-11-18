@@ -32,12 +32,13 @@ export class Player {
     this.master.connect(comp); comp.connect(ac.destination);
     this.recordDest = ac.createMediaStreamDestination && !(ac instanceof OfflineAudioContext) ? ac.createMediaStreamDestination() : null;
     if (this.recordDest) comp.connect(this.recordDest);
-    this.narrBus = ac.createGain(); this.narrBus.gain.value = 1.0; this.narrBus.connect(this.master);
+    this.narrBus = ac.createGain(); this.narrBus.gain.value = 1.25; this.narrBus.connect(this.master);
     this.musicVol = ac.createGain(); this.musicVol.gain.value = 0.5; this.musicVol.connect(this.master);
     this.duck = ac.createGain(); this.duck.connect(this.musicVol);
     this.sfxBus = ac.createGain(); this.sfxBus.gain.value = 0.75; this.sfxBus.connect(this.master);
+    this.sfxDuck = ac.createGain(); this.sfxDuck.connect(this.sfxBus);
     this.reverb = makeReverb(ac); this.revRet = ac.createGain(); this.revRet.gain.value = 0.32;
-    this.reverb.connect(this.revRet); this.revRet.connect(this.master);
+    this.revDuck = ac.createGain(); this.reverb.connect(this.revDuck); this.revDuck.connect(this.revRet); this.revRet.connect(this.master);
   }
 
   // Mixagem completa renderizada offline (exportar WAV / controle de qualidade)
@@ -77,7 +78,7 @@ export class Player {
   _newSession() {
     const ac = this.ac;
     const mk = (dest) => { const g = ac.createGain(); g.connect(dest); return g; };
-    const s = { narr: mk(this.narrBus), music: mk(this.duck), sfx: mk(this.sfxBus), rev: mk(this.reverb), sources: [] };
+    const s = { narr: mk(this.narrBus), music: mk(this.duck), sfx: mk(this.sfxDuck), rev: mk(this.reverb), sources: [] };
     s.music.connect(this.reverb);
     // envio de reverb para efeitos
     const send = ac.createGain(); send.gain.value = 0.5; s.sfx.connect(send); send.connect(s.rev);
@@ -211,23 +212,26 @@ export class Player {
 
   // Ducking: a trilha abaixa automaticamente durante cada fala
   _scheduleDucking(from) {
-    const g = this.duck.gain, now = this.ac.currentTime;
-    g.cancelScheduledValues(0);
-    const inLine = this.timeline.lines.some(L => from >= L.start - 0.2 && from <= L.end + 0.3);
-    const DUCK = 0.42;
-    g.setValueAtTime(inLine ? DUCK : 1, now);
-    // une falas próximas em um único intervalo de ducking
+    // Durante as falas, trilha, efeitos e reverb abaixam para a voz ficar sempre na frente.
+    const targets = [[this.duck.gain, 0.3], [this.sfxDuck.gain, 0.36], [this.revDuck.gain, 0.35]];
+    const now = this.ac.currentTime;
     const iv = [];
     for (const L of this.timeline.lines) {
       const last = iv[iv.length - 1];
       if (last && L.start - last[1] < 1.2) last[1] = L.end; else iv.push([L.start, L.end]);
     }
-    for (const [s0, s1] of iv) {
-      if (s1 + 0.9 < from) continue;
-      const a = this.toCtx(s0 - 0.3), b = this.toCtx(s1 + 0.35);
-      if (a > now) { g.setValueAtTime(1, a); g.linearRampToValueAtTime(DUCK, a + 0.3); }
-      if (b > now) { g.setValueAtTime(DUCK, b); g.linearRampToValueAtTime(1, b + 0.6); }
-      else if (b + 0.6 > now) g.linearRampToValueAtTime(1, b + 0.6);
+    const inLine = iv.some(([a, b]) => from >= a - 0.3 && from <= b + 0.35);
+    for (const [g, DUCK] of targets) {
+      g.cancelScheduledValues(0);
+      g.setValueAtTime(inLine ? DUCK : 1, now);
+      for (const [s0, s1] of iv) {
+        if (s1 + 0.9 < from) continue;
+        const a = this.toCtx(s0 - 0.3), b = this.toCtx(s1 + 0.35);
+        if (a > now) { g.setValueAtTime(1, a); g.linearRampToValueAtTime(DUCK, a + 0.3); }
+        if (b > now) { g.setValueAtTime(DUCK, b); g.linearRampToValueAtTime(1, b + 0.6); }
+        else if (b + 0.6 > now) g.linearRampToValueAtTime(1, b + 0.6);
+      }
     }
   }
+
 }

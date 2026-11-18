@@ -7,10 +7,8 @@
 //  o campo "text" de cada fala (mantendo os ids L01, L02...). As cenas e
 //  efeitos estão ancorados nas falas/palavras, então se reajustam sozinhos.
 //
-//  NARRAÇÃO: grave cada fala em um arquivo separado:
-//    audio/ep01/narracao/L01.mp3, L02.mp3 ... (mp3, wav, ogg ou m4a)
-//  Opcional: audio/ep01/narracao/timings.json com tempos por palavra
-//  (gerado por tools/alinhar_narracao.py) para sincronia palavra a palavra.
+//  NARRAÇÃO: audio/ep01/narracao/L01.mp3 ... L14.mp3 + timings.json
+//  (gerados por tools/gerar_narracao.py com edge-tts, voz pt-BR-AntonioNeural).
 // ============================================================================
 import * as THREE from 'three';
 import { cameraPath, shake, smooth, clamp01 } from '../../js/render/stage.js';
@@ -34,7 +32,7 @@ const MOON_ROCHE = [3, 22, 18]; // ~29 unidades do centro da Terra (raio 10) ≈
 export default {
   id: 'ep01',
   titulo: 'E se a Lua caísse na Terra?',
-  roteiroStatus: 'proposto', // troque para 'aprovado' quando o texto final estiver validado
+  roteiroStatus: 'aprovado', // troque para 'aprovado' quando o texto final estiver validado
   intro: 1.25, // segundos antes da primeira fala (abertura com o logo)
   narration: {
     dir: 'audio/ep01/narracao/',
@@ -64,8 +62,8 @@ export default {
   // ------------------------- EFEITOS GLOBAIS -----------------------------
   cues: [
     ...IMPACTS.flatMap((im, i) => [
-      { sfx: 'meteor', at: { ...im.at, offset: (im.at.offset || 0) - 1.4 }, p: { dur: 1.4, level: 0.3, from: im.from[0] < 0 ? -0.8 : 0.8, to: 0, seed: i } },
-      { sfx: 'explosion', at: im.at, p: { level: 0.55 + im.size * 0.1, pan: im.x / 25, seed: i } },
+      { sfx: 'meteor', at: { ...im.at, offset: (im.at.offset || 0) - 1.4 }, p: { dur: 1.4, level: 0.2, from: im.from[0] < 0 ? -0.8 : 0.8, to: 0, seed: i } },
+      { sfx: 'explosion', at: im.at, p: { level: 0.3 + im.size * 0.05, pan: im.x / 25, seed: i } },
     ]),
   ],
 
@@ -170,7 +168,7 @@ export default {
       id: 'terremoto', world: 'village', start: { line: 'L05', offset: -0.3 }, transition: 'whip',
       music: { mood: 'tension', intensity: 0.85 },
       cues: [
-        { sfx: 'rumble', at: { line: 'L05', word: 'puxava' }, span: 'scene', p: { level: 0.75 } },
+        { sfx: 'rumble', at: { line: 'L05', word: 'puxava' }, span: 'scene', p: { level: 0.5 } },
         { sfx: 'crack', at: { line: 'L05', word: 'terremotos' }, p: { level: 0.7 } },
         { sfx: 'impact', at: { line: 'L05', word: 'terremotos' }, p: { level: 0.8 } },
         { sfx: 'steps', at: { line: 'L05', word: 'terremotos', offset: 0.3 }, p: { count: 6, step: 0.2, level: 0.3 } },
@@ -278,11 +276,11 @@ export default {
       id: 'ruptura', world: 'space', start: { line: 'L09', offset: -0.25 }, transition: 'flash',
       music: { mood: 'action', intensity: 0.8 },
       cues: [
-        { sfx: 'rumble', at: { line: 'L09' }, until: BREAK, p: { level: 0.6 } },
-        { sfx: 'crack', at: { line: 'L09', word: 'rasgala' }, p: { level: 0.7 } },
+        { sfx: 'rumble', at: { line: 'L09' }, until: BREAK, p: { level: 0.4 } },
+        { sfx: 'crack', at: { line: 'L09', word: 'rasgala' }, p: { level: 0.5 } },
         { sfx: 'crack', at: { line: 'L09', word: 'rasgala', offset: 0.35 }, p: { level: 0.6 } },
-        { sfx: 'explosion', at: BREAK, p: { level: 1 } },
-        { sfx: 'braam', at: BREAK, p: { dur: 3.5, level: 0.5, freqs: [29.1, 58.3, 87.3, 116.5] } },
+        { sfx: 'explosion', at: BREAK, p: { level: 0.6 } },
+        { sfx: 'braam', at: BREAK, p: { dur: 3.5, level: 0.35, freqs: [29.1, 58.3, 87.3, 116.5] } },
       ],
       setup(w) { w.reset(); Object.assign(w.state, { moonPos: MOON_ROCHE, stretch: 0.25, crack: 0, ring: 0, broken: -1, roche: 0.6 }); },
       update(w, c) {
@@ -309,7 +307,7 @@ export default {
       id: 'meteoros', world: 'village', start: { line: 'L10', offset: -0.3 }, transition: 'fade',
       music: { mood: 'action', intensity: 1 },
       cues: [
-        { sfx: 'wind', span: 'scene', p: { level: 0.3, storm: true } },
+        { sfx: 'wind', span: 'scene', p: { level: 0.2, storm: true } },
         { sfx: 'siren', at: { line: 'L10', offset: 0.4 }, span: 'scene', p: { level: 0.08, pan: -0.5, rate: 0.35 } },
       ],
       setup(w, c) {

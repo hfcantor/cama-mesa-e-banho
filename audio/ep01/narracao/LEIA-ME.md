@@ -1,5 +1,6 @@
-# Narração do EP01 — coloque os arquivos aqui
+# Narração do EP01
 
+Gerada por IA com edge-tts (voz `pt-BR-AntonioNeural`) por `tools/gerar_narracao.py`.
 Um arquivo por fala, com o id da fala no nome:
 
 | Arquivo | Fala |
@@ -21,7 +22,7 @@ Um arquivo por fala, com o id da fala no nome:
 
 - Formatos aceitos: `.mp3`, `.wav`, `.ogg`, `.m4a`.
 - Silêncio no começo/fim do arquivo não atrapalha: o player detecta onde a fala começa e termina.
-- Para sincronizar a legenda palavra por palavra, gere o `timings.json`:
-  `python3 tools/alinhar_narracao.py ep01`
+- `timings.json` traz o instante real de cada palavra (gerado junto com os MP3).
+- Para gerar de novo: `python3 tools/gerar_narracao.py ep01`
 - Se o texto aprovado for diferente, altere o `text` da fala em `episodes/ep01/episode.js`
   **e** grave a narração com o texto novo — a legenda sempre mostra o texto do roteiro.

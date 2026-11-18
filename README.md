@@ -3,7 +3,7 @@
 Motor de episódios animados em **9:16 (1080×1920)** para TikTok, Reels e Kwai. É feito em
 HTML, CSS e JavaScript, com Three.js para o 3D e Web Audio API para o som.
 
-**Episódio 01: "E se a Lua caísse na Terra?"** (cerca de 1:30 com tempos estimados)
+**Episódio 01: "E se a Lua caísse na Terra?"** (1:22 com a narração)
 
 | # | Etapa | Cena | Mundo 3D |
 |---|---|---|---|
@@ -34,25 +34,33 @@ python3 -m http.server 8000
 - `?bloom=0` desliga o pós-processamento de brilho.
 - `?ep=ep02` carrega outro episódio de `episodes/`.
 
-## Narração (obrigatório para o vídeo final)
+## Narração
 
-**Não há voz incluída.** Sem os arquivos, o player entra em **modo pré-visualização**: as
-legendas e as cenas seguem tempos estimados pelo roteiro, nada é falado, e o painel lateral
-avisa isso.
+A narração do EP01 está em `audio/ep01/narracao/L01.mp3 … L14.mp3`, gerada por IA com
+**edge-tts** (voz neural `pt-BR-AntonioNeural`, sem chave de API). O texto falado é
+exatamente o das falas do roteiro. Junto vem o `timings.json`, com o instante real de cada
+palavra informado pelo próprio serviço de voz.
 
-1. Grave cada fala em `audio/ep01/narracao/L01.mp3 … L14.mp3`. A lista com o texto de cada
-   fala está em [`audio/ep01/narracao/LEIA-ME.md`](audio/ep01/narracao/LEIA-ME.md). Outra opção
-   é **arrastar os arquivos para o vídeo** no navegador.
-2. Ao carregar, o player lê a **duração real** de cada arquivo e detecta na forma de onda onde
-   a fala começa e termina. A linha do tempo inteira (cenas, câmeras, efeitos, trilha) se
-   reorganiza a partir desses tempos.
-3. Para a legenda acompanhar **palavra por palavra** pelos tempos reais, gere o `timings.json`:
-   ```bash
-   pip install faster-whisper
-   python3 tools/alinhar_narracao.py ep01
-   ```
-   Sem esse arquivo, cada palavra é distribuída por sílabas dentro do intervalo real da fala.
-   É um cálculo fixo, sem nada aleatório.
+Para gerar de novo (por exemplo, depois de mudar uma fala):
+
+```bash
+pip install edge-tts
+python3 tools/gerar_narracao.py ep01            # todas as falas
+python3 tools/gerar_narracao.py ep01 --so L03   # só uma
+```
+
+O serviço usado é `speech.platform.bing.com`, que precisa estar liberado na rede. Atrás de
+proxy, o script usa `HTTPS_PROXY` sozinho. Ritmo e tom de cada fala ficam em `DIRECAO`,
+dentro do script.
+
+- Ao carregar, o player lê a duração real de cada arquivo, e a linha do tempo inteira (cenas,
+  câmeras, efeitos, trilha) se ajusta a ela.
+- As legendas usam o `timings.json`: cada palavra aparece quando é dita.
+- Você também pode usar gravações próprias com os mesmos nomes, ou arrastá-las para o vídeo.
+  Para gerar o `timings.json` de uma gravação humana, use `tools/alinhar_narracao.py`
+  (precisa de faster-whisper).
+- Sem nenhum arquivo, o player entra em modo pré-visualização (tempos estimados, sem voz) e
+  avisa no painel lateral.
 
 ## Exportar
 
@@ -70,7 +78,7 @@ avisa isso.
   são uma função do tempo, e o som do impacto usa a mesma âncora da explosão na tela.
 - As legendas aparecem palavra por palavra no instante da fala, com destaque de cor nas
   palavras-chave, e somem quando a fala termina.
-- A trilha **abaixa sozinha** durante cada fala (ducking) e volta a subir nas pausas.
+- Durante cada fala, a trilha, os efeitos e o reverb **abaixam sozinhos** (ducking) e voltam nas pausas. A voz fica pelo menos 6 dB acima do fundo em todas as falas, medido na mixagem offline.
 
 ## Áudio original
 
@@ -94,7 +102,8 @@ js/render/stage.js                  WebGL + bloom + compositor 2D, câmeras
 js/render/overlays.js               legendas, logo, CTAs, tela final
 js/three/                           personagens, partículas, texturas e os 4 mundos
 episodes/ep01/episode.js            roteiro, cenas, câmeras e cues do episódio
-tools/alinhar_narracao.py           gera timings.json com tempos por palavra
+tools/gerar_narracao.py             gera a narração (edge-tts) + timings.json
+tools/alinhar_narracao.py           timings.json para gravações humanas (whisper)
 vendor/, fonts/                     Three.js r170 (MIT), Anton e Montserrat (OFL), locais
 ```
 
@@ -106,7 +115,5 @@ vêm do motor.
 
 ## Antes de publicar
 
-- O roteiro do EP01 está marcado como **proposto** (`roteiroStatus`). Troque pelo texto
-  aprovado se for diferente e mude o status para `aprovado`.
 - O @ do perfil na chamada do meio está em `js/series.js` (`@historiasdotabocal`). Troque
   pelo @ real.
