@@ -160,7 +160,7 @@ export class VillageWorld {
     this.moonLight.position.set(-20, 40, -30);
     this.moonLight.castShadow = true;
     const sc = this.moonLight.shadow.camera; sc.left = -30; sc.right = 30; sc.top = 30; sc.bottom = -30; sc.near = 1; sc.far = 150;
-    this.moonLight.shadow.mapSize.set(2048, 2048); this.moonLight.shadow.bias = -0.0005; this.moonLight.shadow.radius = 4;
+    this.moonLight.shadow.mapSize.set(1024, 1024); this.moonLight.shadow.bias = -0.0005; this.moonLight.shadow.radius = 4;
     s.add(this.moonLight); s.add(this.moonLight.target);
     this.fill = new THREE.PointLight('#ffb070', 6, 18, 1.6); this.fill.position.set(-5, 2.5, -2); s.add(this.fill);
     this.camLight = new THREE.PointLight('#ffd9b8', 5, 14, 1.4); s.add(this.camLight);

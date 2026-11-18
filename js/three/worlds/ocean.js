@@ -43,7 +43,7 @@ export class OceanWorld {
     const r = rng(8);
 
     // água
-    const wg = new THREE.PlaneGeometry(500, 500, 150, 150);
+    const wg = new THREE.PlaneGeometry(500, 500, 100, 100);
     wg.rotateX(-Math.PI / 2);
     this.water = new THREE.Mesh(wg, new THREE.MeshStandardMaterial({ color: '#0d3a52', roughness: 0.12, metalness: 0.35, transparent: true, opacity: 0.94 }));
     this.water.receiveShadow = true;

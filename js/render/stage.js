@@ -25,6 +25,7 @@ export class Stage {
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;
     this.camera = new THREE.PerspectiveCamera(50, W / H, 0.1, 2000);
     this.bloomOn = bloom;
+    this.bloomWanted = bloom;
     this.composer = new EffectComposer(this.renderer);
     this.renderPass = new RenderPass(new THREE.Scene(), this.camera);
     this.bloom = new UnrealBloomPass(new THREE.Vector2(W, H), 0.6, 0.5, 0.82);
@@ -82,11 +83,19 @@ export class Stage {
     const g = this.g;
     if (tint) { g.save(); g.globalCompositeOperation = 'soft-light'; g.fillStyle = tint; g.fillRect(0, 0, W, H); g.restore(); }
     if (vignette > 0) {
-      const grd = g.createRadialGradient(W / 2, H / 2, H * 0.28, W / 2, H / 2, H * 0.62);
-      grd.addColorStop(0, 'rgba(0,0,0,0)'); grd.addColorStop(1, `rgba(0,0,0,${vignette})`);
-      g.fillStyle = grd; g.fillRect(0, 0, W, H);
+      // vinheta pré-renderizada (gradiente radial por quadro é caro)
+      if (!this._vig || this._vigA !== vignette) {
+        const c = document.createElement('canvas'); c.width = W / 4; c.height = H / 4;
+        const vg = c.getContext('2d');
+        const grd = vg.createRadialGradient(W / 8, H / 8, H * 0.07, W / 8, H / 8, H * 0.155);
+        grd.addColorStop(0, 'rgba(0,0,0,0)'); grd.addColorStop(1, `rgba(0,0,0,${vignette})`);
+        vg.fillStyle = grd; vg.fillRect(0, 0, c.width, c.height);
+        this._vig = c; this._vigA = vignette;
+      }
+      g.drawImage(this._vig, 0, 0, W, H);
     }
-    if (grain > 0) {
+    // granulado só na exportação (no tempo real o blend 'overlay' em tela cheia custa caro)
+    if (grain > 0 && this.exporting) {
       g.save();
       g.globalAlpha = grain;
       g.globalCompositeOperation = 'overlay';

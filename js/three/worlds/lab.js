@@ -144,7 +144,9 @@ export class LabWorld {
     this.bulb.material.emissiveIntensity = st.alarm * (2 + Math.sin(t * 10) * 1);
     this.redFill.intensity = st.alarm * (6 + Math.sin(t * 10) * 5);
     this.screenLight.intensity = 6 + Math.sin(t * 13) * 0.6;
-    this.drawScreens(t);
+    // telas atualizadas a 15 qps (cada envio de textura custa caro)
+    const fr = Math.floor(t * 15);
+    if (fr !== this._scrFrame) { this._scrFrame = fr; this.drawScreens(t); }
     this.sci1.update(t, dt); this.sci2.update(t, dt);
   }
 }

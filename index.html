@@ -34,12 +34,18 @@
           <span id="time">0:00 / 0:00</span>
           <span class="spacer"></span>
           <button id="btnWav" class="pill" title="Exportar a mixagem de áudio (narração + trilha + efeitos) em WAV">♪ WAV</button>
-          <button id="btnRec" class="pill" title="Gravar o episódio em vídeo (tempo real)">● Gravar</button>
+          <button id="btnRec" class="pill" title="Baixar o episódio em MP4 (1080×1920, 30 qps, com áudio)">⬇ Baixar MP4</button>
           <button id="btnFull" aria-label="Tela cheia"><svg viewBox="0 0 24 24"><path d="M5 5h5v2H7v3H5zm9 0h5v5h-2V7h-3zM5 14h2v3h3v2H5zm12 3v-3h2v5h-5v-2z"/></svg></button>
         </div>
       </div>
 
       <div id="recBadge" class="hidden">● REC</div>
+      <div id="exporting" class="overlay hidden">
+        <div class="brand"><span class="small">EXPORTANDO</span><span class="big">MP4</span><span class="tag">1080×1920 · 30 QPS · COM ÁUDIO</span></div>
+        <div class="bar"><i id="exportBar"></i></div>
+        <p id="exportText">Preparando…</p>
+        <button id="btnCancelExport" class="pill">Cancelar</button>
+      </div>
       <div id="drop" class="overlay hidden"><p>Solte os arquivos de narração<br><small>L01.mp3, L02.mp3 … e timings.json (opcional)</small></p></div>
     </div>
 

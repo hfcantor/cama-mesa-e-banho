@@ -9,11 +9,13 @@ import { SpaceWorld } from './three/worlds/space.js';
 import { VillageWorld } from './three/worlds/village.js';
 import { OceanWorld } from './three/worlds/ocean.js';
 import { LabWorld } from './three/worlds/lab.js';
+import { exportMp4, canExportMp4 } from './core/exporter.js';
 
 const $ = (id) => document.getElementById(id);
 const params = new URLSearchParams(location.search);
 const EP = (params.get('ep') || 'ep01').replace(/[^a-z0-9_-]/gi, '');
-const QUALITY = Math.max(0.35, Math.min(1, parseFloat(params.get('q') || '0.75')));
+const Q_FIXED = params.has('q');
+const QUALITY = Math.max(0.35, Math.min(1, parseFloat(params.get('q') || '0.7')));
 
 const app = { narration: new Map(), timings: null, recording: false };
 window.__tabocal = app;
@@ -96,15 +98,34 @@ function rebuild() {
 
 // ---------------- laço principal ----------------
 let lastNow = performance.now();
+// Qualidade adaptativa: se o aparelho não sustenta ~45 qps, reduz a resolução
+// interna do 3D (e, no limite, o bloom) até a reprodução ficar fluida.
+const perf = { ema: 1 / 60, slow: 0, steps: [0.7, 0.6, 0.5, 0.42, 0.35] };
+function adapt(dt) {
+  if (Q_FIXED || app.recording) return;
+  perf.ema = perf.ema * 0.92 + dt * 0.08;
+  if (perf.ema > 1 / 45) perf.slow += dt; else perf.slow = Math.max(0, perf.slow - dt * 0.5);
+  if (perf.slow > 1.2) {
+    perf.slow = 0; perf.ema = 1 / 60;
+    const s = app.stage;
+    const next = perf.steps.find(q => q < s.quality - 0.01);
+    if (next) s.setQuality(next);
+    else if (s.bloomOn) s.bloomOn = false;
+    console.info('[qualidade] 3D em', s.quality, 'bloom', s.bloomOn);
+  }
+}
+
 function loop(now) {
   const dt = Math.min(0.1, (now - lastNow) / 1000);
   lastNow = now;
+  requestAnimationFrame(loop);
+  if (app.exporting) return; // a exportação controla o render
   const p = app.player;
   const t = p.timeline ? p.time() : 0;
   const playing = p.state === 'playing';
   app.director.frame(t, playing ? dt : 0);
+  if (playing && document.visibilityState === 'visible') adapt(dt);
   updateUI(t);
-  requestAnimationFrame(loop);
 }
 
 // Renderização determinística para testes/miniaturas: simula `warm` segundos antes de t
@@ -141,7 +162,12 @@ function setupUI() {
   });
   p.onEnded = () => { $('bigPlay').classList.remove('hidden'); if (app.recording) stopRecording(); };
   $('frame').addEventListener('pointermove', () => { $('controls').classList.remove('idle'); clearTimeout(idleTimer); idleTimer = setTimeout(() => p.state === 'playing' && $('controls').classList.add('idle'), 2200); });
-  $('btnRec').onclick = () => (app.recording ? stopRecording() : startRecording());
+  $('btnRec').onclick = () => {
+    if (app.recording) return stopRecording();
+    if (canExportMp4()) return downloadMp4();
+    startRecording(); // navegadores sem WebCodecs: gravação em tempo real
+  };
+  $('btnCancelExport').onclick = () => { app.cancelExport = true; };
   $('btnWav').onclick = async () => { $('btnWav').textContent = '…'; await app.exportWav(); $('btnWav').textContent = '♪ WAV'; };
 
   // arrastar e soltar narração
@@ -209,7 +235,37 @@ app.exportWav = async () => {
   a.click();
 };
 
-// ---------------- gravação ----------------
+// ---------------- baixar MP4 (quadro a quadro) ----------------
+async function downloadMp4() {
+  const p = app.player;
+  if (app.narration.size < app.episode.lines.length && !confirm(`Atenção: faltam ${app.episode.lines.length - app.narration.size} trechos de narração. Exportar mesmo assim?`)) return;
+  if (p.state === 'playing') await p.pause();
+  $('bigPlay').classList.add('hidden');
+  app.exporting = true; app.cancelExport = false;
+  $('exporting').classList.remove('hidden');
+  const prog = (k, txt) => { $('exportBar').style.width = `${Math.round(k * 100)}%`; $('exportText').textContent = txt; };
+  try {
+    const r = await exportMp4(app, prog, () => app.cancelExport);
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(r.blob);
+    a.download = `E-SE-${app.episode.id}-historias-do-tabocal.mp4`;
+    a.click();
+    console.info('[exportação]', r);
+    prog(1, `Pronto! ${(r.blob.size / 1048576).toFixed(1)} MB · ${r.frames} quadros · vídeo ${r.video} · áudio ${r.audio || 'NENHUM'}`);
+    if (!r.audio) alert('Seu navegador não tem codificador de áudio: o MP4 saiu sem som. Use Chrome ou Edge atualizados, ou o botão ♪ WAV.');
+    await new Promise(r => setTimeout(r, 2500));
+  } catch (e) {
+    if (e.message !== 'cancelado') { console.error(e); alert('Falha na exportação: ' + e.message); }
+  } finally {
+    app.exporting = false;
+    $('exporting').classList.add('hidden');
+    app.director.invalidate();
+    $('bigPlay').classList.remove('hidden');
+  }
+}
+app.downloadMp4 = downloadMp4;
+
+// ---------------- gravação em tempo real (alternativa) ----------------
 let rec = null, chunks = [];
 async function startRecording() {
   const p = app.player;
@@ -244,7 +300,7 @@ function stopRecording() {
   app.recording = false;
   if (rec && rec.state !== 'inactive') rec.stop();
   app.stage.setQuality(app.prevQuality || QUALITY);
-  $('btnRec').classList.remove('on'); $('btnRec').textContent = '● Gravar';
+  $('btnRec').classList.remove('on'); $('btnRec').textContent = '⬇ Baixar MP4';
   $('recBadge').classList.add('hidden');
 }
 

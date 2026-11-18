@@ -65,6 +65,8 @@ html, body { margin: 0; height: 100%; background: var(--bg); color: var(--ink); 
 #seek::before { content: ''; position: absolute; left: 0; right: 0; height: 4px; border-radius: 2px; background: rgba(255, 255, 255, 0.25); }
 #seekFill { position: relative; height: 4px; border-radius: 2px; background: var(--gold); width: 0; }
 
+#exporting { background: rgba(5, 6, 12, 0.92); gap: 3vh; z-index: 4; }
+#exporting .pill { background: none; color: #fff; border: 1px solid rgba(255,255,255,0.35); padding: 8px 18px; border-radius: 99px; font: 800 13px Montserrat, sans-serif; cursor: pointer; }
 #recBadge { position: absolute; top: 12px; right: 12px; background: #e02424; color: #fff; font: 900 12px Montserrat; padding: 4px 10px; border-radius: 99px; animation: blink 1s infinite; }
 @keyframes blink { 50% { opacity: 0.4; } }
 #drop { background: rgba(5, 6, 12, 0.85); border: 3px dashed var(--gold); text-align: center; font-weight: 800; font-size: 20px; }
