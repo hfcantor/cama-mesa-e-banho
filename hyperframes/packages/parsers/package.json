@@ -1,0 +1,8 @@
+{
+  "name": "@hfr/parsers",
+  "version": "0.1.0",
+  "description": "Parsers and serializers: captions (SRT, WebVTT, ASS, JSON word timings), slide markdown, CSS/JS syntax checks.",
+  "type": "module",
+  "exports": { ".": "./src/index.ts" },
+  "dependencies": { "@hfr/core": "0.1.0", "acorn": "8.15.0", "css-tree": "3.1.0" }
+}

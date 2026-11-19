@@ -1,0 +1,6 @@
+node_modules/
+.hfr-cache/
+renders/
+dist/
+*.log
+.env
