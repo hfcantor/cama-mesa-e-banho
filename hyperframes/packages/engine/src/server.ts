@@ -97,7 +97,7 @@ export function createCompositionHandler(opts: CompositionServerOptions): Handle
   const root = path.resolve(opts.root);
   const base = opts.base ?? '/';
   if (!base.startsWith('/') || !base.endsWith('/')) throw new Error('base must start and end with "/"');
-  const cache = new MediaCache(opts.cacheDir ?? path.join(root, '.hfr-cache'));
+  const cache = new MediaCache(opts.cacheDir ?? process.env.HFR_CACHE_DIR ?? path.join(root, '.hfr-cache'));
   const vendor = vendorLibraries();
   const addons = threeAddonsDir();
   const params = {

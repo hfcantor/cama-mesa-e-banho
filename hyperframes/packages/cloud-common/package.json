@@ -1,0 +1,8 @@
+{
+  "name": "@hfr/cloud-common",
+  "version": "0.1.0",
+  "description": "Shared cloud render logic: storage URIs (file://, s3://, gs://), project download/unpack, render + upload.",
+  "type": "module",
+  "exports": { ".": "./src/index.ts" },
+  "dependencies": { "@hfr/core": "0.1.0", "@hfr/producer": "0.1.0", "fflate": "0.8.3" }
+}
