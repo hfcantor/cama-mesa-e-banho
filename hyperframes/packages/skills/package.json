@@ -1,0 +1,15 @@
+{
+  "name": "@hfr/skills",
+  "version": "0.1.0",
+  "description": "Skill tooling: slideshow, reverse-any-video, style sampling, website capture, Figma import, Remotion conversion.",
+  "type": "module",
+  "exports": { ".": "./src/index.ts" },
+  "dependencies": {
+    "@hfr/core": "0.1.0",
+    "@hfr/engine": "0.1.0",
+    "@hfr/media": "0.1.0",
+    "@hfr/parsers": "0.1.0",
+    "@hfr/voice": "0.1.0",
+    "typescript": "5.9.3"
+  }
+}
