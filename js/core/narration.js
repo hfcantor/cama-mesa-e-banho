@@ -54,7 +54,23 @@ export async function loadNarration(ctx, episode, onProgress = () => {}) {
   return { map: result, timings };
 }
 
+// Ganho para igualar o volume de fala entre os trechos (alvo -18 dBFS RMS, limitado)
+function speechGain(buffer, a, b) {
+  const ch = buffer.getChannelData(0), sr = buffer.sampleRate;
+  let s = 0, n = 0;
+  for (let i = Math.floor(a * sr), e = Math.min(ch.length, Math.floor(b * sr)); i < e; i++) { s += ch[i] * ch[i]; n++; }
+  const rms = Math.sqrt(s / Math.max(1, n));
+  if (rms < 1e-5) return 1;
+  return Math.max(0.6, Math.min(2.0, Math.pow(10, -18 / 20) / rms));
+}
+
 function makeEntry(buffer, words, name) {
+  const e = makeEntryRaw(buffer, words, name);
+  e.gain = speechGain(buffer, e.onset, e.offset);
+  return e;
+}
+
+function makeEntryRaw(buffer, words, name) {
   const { onset, offset } = detectSpeech(buffer);
   // Se houver timestamps de alinhamento, eles mandam no início/fim da fala.
   if (words && words.length) {

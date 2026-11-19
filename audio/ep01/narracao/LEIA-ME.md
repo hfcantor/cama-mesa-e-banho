@@ -1,6 +1,7 @@
 # Narração do EP01
 
-Gerada por IA com edge-tts (voz `pt-BR-AntonioNeural`) por `tools/gerar_narracao.py`.
+Gravada no ElevenLabs (Eleven v3) num arquivo único e dividida em falas por
+`tools/dividir_narracao.py`, que também gera o `timings.json`.
 Um arquivo por fala, com o id da fala no nome:
 
 | Arquivo | Fala |
@@ -23,6 +24,6 @@ Um arquivo por fala, com o id da fala no nome:
 - Formatos aceitos: `.mp3`, `.wav`, `.ogg`, `.m4a`.
 - Silêncio no começo/fim do arquivo não atrapalha: o player detecta onde a fala começa e termina.
 - `timings.json` traz o instante real de cada palavra (gerado junto com os MP3).
-- Para gerar de novo: `python3 tools/gerar_narracao.py ep01`
+- Para dividir uma nova gravação única: `python3 tools/dividir_narracao.py ep01 arquivo.mp3`
 - Se o texto aprovado for diferente, altere o `text` da fala em `episodes/ep01/episode.js`
   **e** grave a narração com o texto novo — a legenda sempre mostra o texto do roteiro.

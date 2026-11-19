@@ -105,7 +105,7 @@ export function buildTimeline(episode, narration = new Map()) {
     absWords.forEach(x => { x.color = emph[x.key] || null; });
     const line = {
       id: def.id, text: def.text, start, end, words: absWords,
-      audio: real ? { buffer: real.buffer, at: audioStart } : null,
+      audio: real ? { buffer: real.buffer, at: audioStart, gain: real.gain ?? 1 } : null,
       chunks: null,
     };
     line.chunks = chunkWords(absWords).map((ws, i, arr) => ({

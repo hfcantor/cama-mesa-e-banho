@@ -3,7 +3,7 @@
 Motor de episódios animados em **9:16 (1080×1920)** para TikTok, Reels e Kwai. É feito em
 HTML, CSS e JavaScript, com Three.js para o 3D e Web Audio API para o som.
 
-**Episódio 01: "E se a Lua caísse na Terra?"** (1:22 com a narração)
+**Episódio 01: "E se a Lua caísse na Terra?"** (1:12 com a narração)
 
 | # | Etapa | Cena | Mundo 3D |
 |---|---|---|---|
@@ -36,12 +36,18 @@ python3 -m http.server 8000
 
 ## Narração
 
-A narração do EP01 está em `audio/ep01/narracao/L01.mp3 … L14.mp3`, gerada por IA com
-**edge-tts** (voz neural `pt-BR-AntonioNeural`, sem chave de API). O texto falado é
-exatamente o das falas do roteiro. Junto vem o `timings.json`, com o instante real de cada
-palavra informado pelo próprio serviço de voz.
+A narração do EP01 está em `audio/ep01/narracao/L01.mp3 … L14.mp3`. Foi gravada no
+**ElevenLabs** (Eleven v3, com tags de interpretação) num arquivo único e dividida por fala
+com `tools/dividir_narracao.py`. Esse script transcreve o áudio com faster-whisper, alinha a
+transcrição ao texto do roteiro, corta nos silêncios entre as falas e grava o `timings.json`
+com o instante real de cada palavra, ajustado pela energia do áudio.
 
-Para gerar de novo (por exemplo, depois de mudar uma fala):
+```bash
+pip install faster-whisper
+python3 tools/dividir_narracao.py ep01 narracao_completa.mp3
+```
+
+Alternativa sem conta, com voz sintética do edge-tts (`pt-BR-AntonioNeural`):
 
 ```bash
 pip install edge-tts
@@ -102,7 +108,8 @@ js/render/stage.js                  WebGL + bloom + compositor 2D, câmeras
 js/render/overlays.js               legendas, logo, CTAs, tela final
 js/three/                           personagens, partículas, texturas e os 4 mundos
 episodes/ep01/episode.js            roteiro, cenas, câmeras e cues do episódio
-tools/gerar_narracao.py             gera a narração (edge-tts) + timings.json
+tools/dividir_narracao.py           divide uma narração única em L01..L14 + timings.json
+tools/gerar_narracao.py             gera a narração com edge-tts + timings.json
 tools/alinhar_narracao.py           timings.json para gravações humanas (whisper)
 vendor/, fonts/                     Three.js r170 (MIT), Anton e Montserrat (OFL), locais
 ```

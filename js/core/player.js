@@ -186,7 +186,8 @@ export class Player {
       if (!startsInWindow && !overlaps) continue;
       const src = ac.createBufferSource();
       src.buffer = L.audio.buffer;
-      src.connect(s.narr);
+      const lg = ac.createGain(); lg.gain.value = L.audio.gain ?? 1;
+      src.connect(lg); lg.connect(s.narr);
       if (overlaps) src.start(Math.max(now, this.toCtx(e0)), e0 - a);
       else src.start(Math.max(now, this.toCtx(a)));
       s.sources.push(src);

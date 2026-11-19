@@ -8,7 +8,7 @@
 //  efeitos estão ancorados nas falas/palavras, então se reajustam sozinhos.
 //
 //  NARRAÇÃO: audio/ep01/narracao/L01.mp3 ... L14.mp3 + timings.json
-//  (gerados por tools/gerar_narracao.py com edge-tts, voz pt-BR-AntonioNeural).
+//  (gravação do ElevenLabs dividida por tools/dividir_narracao.py).
 // ============================================================================
 import * as THREE from 'three';
 import { cameraPath, shake, smooth, clamp01 } from '../../js/render/stage.js';
@@ -276,7 +276,7 @@ export default {
       id: 'ruptura', world: 'space', start: { line: 'L09', offset: -0.25 }, transition: 'flash',
       music: { mood: 'action', intensity: 0.8 },
       cues: [
-        { sfx: 'rumble', at: { line: 'L09' }, until: BREAK, p: { level: 0.4 } },
+        { sfx: 'rumble', at: { line: 'L09' }, until: BREAK, p: { level: 0.28 } },
         { sfx: 'crack', at: { line: 'L09', word: 'rasgala' }, p: { level: 0.5 } },
         { sfx: 'crack', at: { line: 'L09', word: 'rasgala', offset: 0.35 }, p: { level: 0.6 } },
         { sfx: 'explosion', at: BREAK, p: { level: 0.6 } },
