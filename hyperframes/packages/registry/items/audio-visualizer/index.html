@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>{{title}}</title>
+  <link rel="stylesheet" href="/__hf/fonts/inter/index.css">
+
+</head>
+<body>
+  <div id="stage" data-composition data-width="1920" data-height="1080" data-fps="30" data-duration="8" data-background="#05060a" data-audio-analysis="assets/music.mp3">
+
+    <audio src="assets/music.mp3" data-start="0" data-volume="0.9" data-fade-out="1"></audio>
+    <canvas data-hf-visualizer="circle" data-color="#22d3ee" style="position:absolute;left:50%;top:50%;width:900px;height:900px;translate:-50% -50%"></canvas>
+    <canvas data-hf-visualizer="bars" data-color="#a78bfa" style="position:absolute;left:0;right:0;bottom:0;width:100%;height:220px;opacity:.7"></canvas>
+    <h1 id="pulse" style="position:absolute;left:50%;top:50%;translate:-50% -50%;margin:0;color:#fff;font:900 96px 'Inter Variable',system-ui">{{title}}</h1>
+
+  </div>
+
+<script>
+  const title = document.getElementById('pulse');
+  hf.onFrame((t) => { title.style.scale = String(1 + hf.audio.level(t) * 0.25); });
+</script>
+</body>
+</html>

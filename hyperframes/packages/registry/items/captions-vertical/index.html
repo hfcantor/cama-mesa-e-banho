@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>{{title}}</title>
+  <link rel="stylesheet" href="/__hf/fonts/inter/index.css">
+  <style>
+    .bg{position:absolute;inset:0;background:linear-gradient(160deg,#111827,#7c2d12 60%,#ea580c)}
+    .top{position:absolute;top:9%;left:8%;right:8%;margin:0;text-align:center;color:#fff;font:800 76px/1.1 'Inter Variable',system-ui}
+  </style>
+</head>
+<body>
+  <div id="stage" data-composition data-width="1080" data-height="1920" data-fps="30" data-duration="10" data-background="#111827">
+
+    <div class="bg" data-start="0" data-kenburns="in 0.12"></div>
+    <h1 class="top" data-start="0.2" data-enter="fade-down 0.6">{{title}}</h1>
+    <div data-hf-captions="captions.json" data-style="highlight" data-position="center" data-max-words="4"
+         style="font-size:92px;font-family:'Inter Variable',system-ui;font-weight:900;--hf-cap-highlight-bg:#facc15"></div>
+    <canvas data-hf-particles="bubbles" data-count="40" data-colors="#ffffff" data-start="0" style="position:absolute;inset:0;width:100%;height:100%"></canvas>
+
+  </div>
+
+</body>
+</html>

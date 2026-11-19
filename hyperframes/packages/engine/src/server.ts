@@ -18,7 +18,7 @@ import { parseCaptions } from '@hfr/parsers';
 import { bundleShaderTransitions } from '@hfr/shader-transitions';
 import { MediaCache } from './media-cache.ts';
 import { applyTailwind } from './tailwind.ts';
-import { threeAddonsDir, vendorLibraries } from './vendor.ts';
+import { fontDir, threeAddonsDir, vendorLibraries, FONT_PACKAGES } from './vendor.ts';
 
 export type ServerMode = 'preview' | 'render' | 'inspect';
 
@@ -131,6 +131,12 @@ export function createCompositionHandler(opts: CompositionServerOptions): Handle
       const file = safeJoin(addons, sub.slice('lib/three/addons/'.length));
       return sendFile(req, res, file, 'text/javascript; charset=utf-8', 'public, max-age=86400');
     }
+    if (sub.startsWith('fonts/')) {
+      const [, name, ...rest] = sub.split('/');
+      const dir = fontDir(name ?? '');
+      if (!dir) throw new HttpError(404, `unknown font "${name}". Available: ${Object.keys(FONT_PACKAGES).join(', ')}`);
+      return sendFile(req, res, safeJoin(dir, rest.join('/') || 'index.css'), undefined, 'public, max-age=86400');
+    }
     if (sub.startsWith('lib/')) {
       const lib = vendor[sub.slice(4)];
       if (!lib) throw new HttpError(404, `unknown library ${sub.slice(4)}. Available: ${Object.keys(vendor).join(', ')}`);
@@ -187,7 +193,8 @@ export function createCompositionHandler(opts: CompositionServerOptions): Handle
       return true;
     } catch (e) {
       const err = e as Error & { status?: number };
-      const status = err instanceof HttpError ? err.status : /escapes the project/.test(err.message) ? 403 : 500;
+      const code = (err as NodeJS.ErrnoException).code;
+      const status = err instanceof HttpError ? err.status : /escapes the project/.test(err.message) ? 403 : code === 'ENOENT' ? 404 : 500;
       if (status === 500) opts.log?.(`[server] ${pathname}: ${err.stack ?? err.message}`);
       if (!res.headersSent) send(res, status, err.message);
       else res.end();

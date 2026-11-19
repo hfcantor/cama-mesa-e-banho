@@ -1,0 +1,44 @@
+{
+  "name": "audio-bars",
+  "type": "block",
+  "title": "Audio bars",
+  "tags": [
+    "audio",
+    "visualizer",
+    "reactive"
+  ],
+  "description": "Bars that react to an audio file (offline FFT analysis, deterministic).",
+  "params": {
+    "src": {
+      "type": "string",
+      "default": "assets/music.mp3",
+      "description": "audio file to analyse"
+    },
+    "color": {
+      "type": "color",
+      "default": "#a78bfa",
+      "description": "bar colour"
+    },
+    "mode": {
+      "type": "enum",
+      "default": "bars",
+      "description": "bars or circle",
+      "options": [
+        "bars",
+        "circle"
+      ]
+    },
+    "start": {
+      "type": "number",
+      "default": 0,
+      "description": "start (s)"
+    },
+    "duration": {
+      "type": "number",
+      "default": 10,
+      "description": "duration (s)"
+    }
+  },
+  "snippet": "snippet.html",
+  "head": "head.html"
+}

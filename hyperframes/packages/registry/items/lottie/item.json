@@ -1,0 +1,16 @@
+{
+  "name": "lottie",
+  "type": "template",
+  "title": "Lottie animation",
+  "description": "Lottie (Bodymovin) animation played frame-accurately with data-hf-lottie.",
+  "tags": [
+    "lottie"
+  ],
+  "params": {
+    "title": {
+      "type": "string",
+      "default": "My video",
+      "description": "project title"
+    }
+  }
+}

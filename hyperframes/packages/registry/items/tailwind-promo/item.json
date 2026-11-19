@@ -1,0 +1,17 @@
+{
+  "name": "tailwind-promo",
+  "type": "template",
+  "title": "Tailwind CSS v4 card",
+  "description": "Styling with Tailwind v4 utility classes compiled at serve/render time.",
+  "tags": [
+    "tailwind",
+    "css"
+  ],
+  "params": {
+    "title": {
+      "type": "string",
+      "default": "My video",
+      "description": "project title"
+    }
+  }
+}

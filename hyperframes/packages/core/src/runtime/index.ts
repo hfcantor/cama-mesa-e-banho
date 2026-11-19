@@ -94,6 +94,8 @@ let isReady = false;
 let gsapGlobal: Adapter | null = null;
 let audioData: { fps: number; bands: number; frames: number[][] } | null = null;
 let resolveReady!: () => void;
+let resolveConfig!: () => void;
+const configPromise = new Promise<void>((r) => { resolveConfig = r; });
 const readyPromise = new Promise<void>((r) => { resolveReady = r; });
 
 const hfUrl = (p: string) => `${params.base}__hf/${p}`;
@@ -532,6 +534,7 @@ async function init() {
     if (config.background) root.style.background = config.background;
   }
   document.documentElement.style.background = config.background ?? '';
+  resolveConfig();
 
   // 1. collect clips
   const els = Array.from(root.querySelectorAll<HTMLElement>(TIMED_SELECTOR));
@@ -674,6 +677,7 @@ const runtime = {
   },
   audio: {
     async load(src: string, bands = 32) {
+      await configPromise;
       audioData = await fetchJson(hfUrl(`analysis?src=${encodeURIComponent(serverPath(src))}&fps=${config.fps}&bands=${bands}`));
     },
     level(t: number = currentTime): number {
@@ -702,6 +706,7 @@ if (document.readyState === 'loading') document.addEventListener('DOMContentLoad
 else void init().catch(fail);
 
 function fail(e: unknown) {
+  resolveConfig();
   errors.push(`runtime init failed: ${(e as Error)?.stack ?? e}`);
   isReady = true;
   resolveReady();

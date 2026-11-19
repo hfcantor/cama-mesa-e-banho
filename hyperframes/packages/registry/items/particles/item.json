@@ -1,0 +1,46 @@
+{
+  "name": "particles",
+  "type": "block",
+  "title": "Particles overlay",
+  "tags": [
+    "effects",
+    "particles"
+  ],
+  "description": "Seeded particle systems: snow, confetti, sparks, bubbles, stars, dust.",
+  "params": {
+    "preset": {
+      "type": "enum",
+      "default": "confetti",
+      "description": "particle preset",
+      "options": [
+        "snow",
+        "confetti",
+        "sparks",
+        "bubbles",
+        "stars",
+        "dust"
+      ]
+    },
+    "count": {
+      "type": "number",
+      "default": 160,
+      "description": "particles"
+    },
+    "colors": {
+      "type": "string",
+      "default": "#ffd166,#ef476f,#06d6a0,#118ab2",
+      "description": "comma-separated colours"
+    },
+    "start": {
+      "type": "number",
+      "default": 0,
+      "description": "start (s)"
+    },
+    "duration": {
+      "type": "number",
+      "default": 5,
+      "description": "duration (s)"
+    }
+  },
+  "snippet": "snippet.html"
+}

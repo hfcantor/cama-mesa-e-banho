@@ -1,0 +1,16 @@
+{
+  "name": "anime-showcase",
+  "type": "template",
+  "title": "Anime.js showcase",
+  "description": "Anime.js v4 timeline (registered with hf.register) with stagger and SVG drawing.",
+  "tags": [
+    "anime"
+  ],
+  "params": {
+    "title": {
+      "type": "string",
+      "default": "My video",
+      "description": "project title"
+    }
+  }
+}

@@ -1,0 +1,11 @@
+<div id="pb-{{uid}}" class="hf-progress" data-name="Progress bar" data-start="{{start}}" data-duration="{{duration}}" data-track="20" style="height: {{height}}px"><div style="background: {{color}}"></div></div>
+<script>
+  (() => {
+    const el = document.getElementById('pb-{{uid}}');
+    const fill = el.firstElementChild;
+    hf.onFrame((t) => {
+      const p = Math.min(1, Math.max(0, (t - Number(el.dataset.start)) / Number(el.dataset.duration)));
+      fill.style.transform = `scaleX(${p})`;
+    });
+  })();
+</script>

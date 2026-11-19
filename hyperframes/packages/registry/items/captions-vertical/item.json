@@ -1,0 +1,18 @@
+{
+  "name": "captions-vertical",
+  "type": "template",
+  "title": "Vertical video with captions",
+  "description": "1080x1920 social video with word-highlighted captions; add narration with `hfr tts`.",
+  "tags": [
+    "social",
+    "captions",
+    "vertical"
+  ],
+  "params": {
+    "title": {
+      "type": "string",
+      "default": "My video",
+      "description": "project title"
+    }
+  }
+}

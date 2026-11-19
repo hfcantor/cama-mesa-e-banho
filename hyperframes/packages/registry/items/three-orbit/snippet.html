@@ -1,0 +1,23 @@
+<canvas id="three-{{uid}}" class="hf-three" data-name="3D object" data-start="{{start}}" data-duration="{{duration}}" data-color="{{color}}"></canvas>
+<script type="module">
+  import * as THREE from 'three';
+  const canvas = document.getElementById('three-{{uid}}');
+  const w = canvas.clientWidth || 1920, h = canvas.clientHeight || 1080;
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, preserveDrawingBuffer: true });
+  renderer.setPixelRatio(window.devicePixelRatio);
+  renderer.setSize(w, h, false);
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(40, w / h, 0.1, 100);
+  const mesh = new THREE.Mesh(new THREE.TorusKnotGeometry(1, 0.32, 220, 32), new THREE.MeshStandardMaterial({ color: canvas.dataset.color, metalness: 0.35, roughness: 0.3 }));
+  scene.add(mesh, new THREE.AmbientLight(0xffffff, 0.5));
+  const key = new THREE.DirectionalLight(0xffffff, 2.2); key.position.set(3, 4, 5); scene.add(key);
+  const rim = new THREE.PointLight(0x22d3ee, 30); rim.position.set(-4, -2, 2); scene.add(rim);
+  const start = Number(canvas.dataset.start);
+  hf.onFrame((t) => {
+    const local = Math.max(0, t - start);
+    mesh.rotation.set(local * 0.5, local * 0.8, 0);
+    camera.position.set(Math.sin(local * 0.3) * 1.5, 0.4, 6 - Math.min(local, 2) * 0.5);
+    camera.lookAt(0, 0, 0);
+    renderer.render(scene, camera);
+  });
+</script>

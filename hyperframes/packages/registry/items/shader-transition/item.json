@@ -1,0 +1,57 @@
+{
+  "name": "shader-transition",
+  "type": "transition",
+  "title": "Shader transition (WebGL)",
+  "tags": [
+    "transition",
+    "shader",
+    "webgl"
+  ],
+  "description": "GLSL transition between two images/videos inside a composition.",
+  "requires": [
+    "shader-transitions"
+  ],
+  "params": {
+    "from": {
+      "type": "string",
+      "default": "assets/registry/sample-a.jpg",
+      "description": "outgoing image"
+    },
+    "to": {
+      "type": "string",
+      "default": "assets/registry/sample-b.jpg",
+      "description": "incoming image"
+    },
+    "shader": {
+      "type": "enum",
+      "default": "ripple",
+      "description": "shader",
+      "options": [
+        "fade",
+        "wipeLeft",
+        "circle",
+        "crossZoom",
+        "pixelize",
+        "ripple",
+        "dissolve",
+        "swirl",
+        "directionalBlur"
+      ]
+    },
+    "start": {
+      "type": "number",
+      "default": 0,
+      "description": "start (s)"
+    },
+    "duration": {
+      "type": "number",
+      "default": 1.5,
+      "description": "duration (s)"
+    }
+  },
+  "snippet": "snippet.html",
+  "files": [
+    "assets/registry/sample-a.jpg",
+    "assets/registry/sample-b.jpg"
+  ]
+}

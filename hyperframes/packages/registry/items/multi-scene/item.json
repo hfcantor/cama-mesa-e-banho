@@ -1,0 +1,17 @@
+{
+  "name": "multi-scene",
+  "type": "template",
+  "title": "Multiple scenes with transitions",
+  "description": "Three scene files joined with FFmpeg xfade transitions plus a project-level music track.",
+  "tags": [
+    "scenes",
+    "transitions"
+  ],
+  "params": {
+    "title": {
+      "type": "string",
+      "default": "My video",
+      "description": "project title"
+    }
+  }
+}

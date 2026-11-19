@@ -1,0 +1,8 @@
+{
+  "name": "@hfr/voice",
+  "version": "0.1.0",
+  "description": "Narration: text-to-speech providers (espeak-ng, ElevenLabs, OpenAI, custom command), transcription (OpenAI, Whisper CLI) and offline word alignment.",
+  "type": "module",
+  "exports": { ".": "./src/index.ts" },
+  "dependencies": { "@hfr/core": "0.1.0", "@hfr/media": "0.1.0", "@hfr/parsers": "0.1.0" }
+}

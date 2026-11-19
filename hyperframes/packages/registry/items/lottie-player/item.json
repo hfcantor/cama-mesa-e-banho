@@ -1,0 +1,41 @@
+{
+  "name": "lottie-player",
+  "type": "block",
+  "title": "Lottie animation",
+  "tags": [
+    "lottie",
+    "vector",
+    "animation"
+  ],
+  "description": "Plays a Lottie (Bodymovin JSON) animation frame-accurately.",
+  "requires": [
+    "lottie"
+  ],
+  "params": {
+    "src": {
+      "type": "string",
+      "default": "assets/registry/hf-spin.json",
+      "description": "Lottie JSON"
+    },
+    "size": {
+      "type": "number",
+      "default": 480,
+      "description": "size (px)"
+    },
+    "start": {
+      "type": "number",
+      "default": 0,
+      "description": "start (s)"
+    },
+    "duration": {
+      "type": "number",
+      "default": 4,
+      "description": "duration (s)"
+    }
+  },
+  "snippet": "snippet.html",
+  "head": "head.html",
+  "files": [
+    "assets/registry/hf-spin.json"
+  ]
+}

@@ -1,0 +1,25 @@
+<div id="chart-{{uid}}" class="hf-chart" data-name="Bar chart" data-start="{{start}}" data-duration="{{duration}}" data-enter="fade 0.4" data-exit="fade 0.4" data-values="{{values}}" data-labels="{{labels}}" style="--bar: {{color}}">
+  <h2>{{title}}</h2><div class="hf-chart-bars"></div>
+</div>
+<script>
+  (() => {
+    const root = document.getElementById('chart-{{uid}}');
+    const values = root.dataset.values.split(',').map(Number);
+    const labels = root.dataset.labels.split(',');
+    const max = Math.max(...values);
+    const box = root.querySelector('.hf-chart-bars');
+    values.forEach((v, i) => {
+      const col = document.createElement('div');
+      col.className = 'hf-chart-col';
+      col.innerHTML = '<span class="v"></span><div class="b"></div><span class="l"></span>';
+      col.querySelector('.v').textContent = v;
+      col.querySelector('.l').textContent = labels[i] ?? '';
+      col.querySelector('.b').style.height = (v / max) * 100 + '%';
+      box.append(col);
+    });
+    const tl = gsap.timeline({ paused: true });
+    tl.from(box.querySelectorAll('.b'), { scaleY: 0, transformOrigin: '50% 100%', duration: 0.9, ease: 'power3.out', stagger: 0.15 }, 0.3)
+      .from(box.querySelectorAll('.v'), { opacity: 0, y: 20, duration: 0.4, stagger: 0.15 }, 0.8);
+    hf.register(tl, { start: 'chart-{{uid}}' });
+  })();
+</script>

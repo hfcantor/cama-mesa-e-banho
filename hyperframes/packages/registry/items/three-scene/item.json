@@ -1,0 +1,17 @@
+{
+  "name": "three-scene",
+  "type": "template",
+  "title": "Three.js scene",
+  "description": "3D scene rendered with Three.js and driven by composition time (hf.onFrame).",
+  "tags": [
+    "3d",
+    "three"
+  ],
+  "params": {
+    "title": {
+      "type": "string",
+      "default": "My video",
+      "description": "project title"
+    }
+  }
+}

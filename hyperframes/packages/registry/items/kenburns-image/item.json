@@ -1,0 +1,47 @@
+{
+  "name": "kenburns-image",
+  "type": "block",
+  "title": "Ken Burns image",
+  "tags": [
+    "image",
+    "camera",
+    "zoom",
+    "pan"
+  ],
+  "description": "Full-frame image with a slow camera move (in/out/left/right/up/down).",
+  "params": {
+    "src": {
+      "type": "string",
+      "default": "assets/registry/sample-a.jpg",
+      "description": "image"
+    },
+    "move": {
+      "type": "enum",
+      "default": "in",
+      "description": "camera move",
+      "options": [
+        "in",
+        "out",
+        "left",
+        "right",
+        "up",
+        "down"
+      ]
+    },
+    "start": {
+      "type": "number",
+      "default": 0,
+      "description": "start (s)"
+    },
+    "duration": {
+      "type": "number",
+      "default": 5,
+      "description": "duration (s)"
+    }
+  },
+  "snippet": "snippet.html",
+  "head": "head.html",
+  "files": [
+    "assets/registry/sample-a.jpg"
+  ]
+}

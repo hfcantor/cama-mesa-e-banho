@@ -50,3 +50,18 @@ export function threeAddonsDir(): string {
 export function threeVersion(): string {
   return (JSON.parse(readFileSync(path.join(pkgDir('three'), 'package.json'), 'utf8')) as { version: string }).version;
 }
+
+/** Open-licensed fonts (Fontsource, OFL) served at /__hf/fonts/<name>/index.css for deterministic typography. */
+export const FONT_PACKAGES: Record<string, { pkg: string; family: string }> = {
+  inter: { pkg: '@fontsource-variable/inter', family: 'Inter Variable' },
+  'bebas-neue': { pkg: '@fontsource/bebas-neue', family: 'Bebas Neue' },
+  'playfair-display': { pkg: '@fontsource-variable/playfair-display', family: 'Playfair Display Variable' },
+  'jetbrains-mono': { pkg: '@fontsource-variable/jetbrains-mono', family: 'JetBrains Mono Variable' },
+};
+
+export function fontDir(name: string): string | null {
+  const f = FONT_PACKAGES[name];
+  if (!f) return null;
+  const req = createRequire(import.meta.url);
+  return path.dirname(req.resolve(`${f.pkg}/index.css`));
+}

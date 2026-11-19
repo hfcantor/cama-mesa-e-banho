@@ -1,0 +1,112 @@
+{
+  "language": "en",
+  "cues": [
+    {
+      "start": 0.3,
+      "end": 9.245,
+      "text": "Every frame of this video is HTML. The captions are timed word by word and highlighted as they are spoken.",
+      "words": [
+        {
+          "text": "Every",
+          "start": 0.3,
+          "end": 0.705
+        },
+        {
+          "text": "frame",
+          "start": 0.765,
+          "end": 1.17
+        },
+        {
+          "text": "of",
+          "start": 1.23,
+          "end": 1.5
+        },
+        {
+          "text": "this",
+          "start": 1.56,
+          "end": 1.92
+        },
+        {
+          "text": "video",
+          "start": 1.98,
+          "end": 2.385
+        },
+        {
+          "text": "is",
+          "start": 2.445,
+          "end": 2.715
+        },
+        {
+          "text": "HTML.",
+          "start": 2.775,
+          "end": 3.18
+        },
+        {
+          "text": "The",
+          "start": 3.53,
+          "end": 3.845
+        },
+        {
+          "text": "captions",
+          "start": 3.905,
+          "end": 4.445
+        },
+        {
+          "text": "are",
+          "start": 4.505,
+          "end": 4.82
+        },
+        {
+          "text": "timed",
+          "start": 4.88,
+          "end": 5.285
+        },
+        {
+          "text": "word",
+          "start": 5.345,
+          "end": 5.705
+        },
+        {
+          "text": "by",
+          "start": 5.765,
+          "end": 6.035
+        },
+        {
+          "text": "word",
+          "start": 6.095,
+          "end": 6.455
+        },
+        {
+          "text": "and",
+          "start": 6.515,
+          "end": 6.83
+        },
+        {
+          "text": "highlighted",
+          "start": 6.89,
+          "end": 7.565
+        },
+        {
+          "text": "as",
+          "start": 7.625,
+          "end": 7.895
+        },
+        {
+          "text": "they",
+          "start": 7.955,
+          "end": 8.315
+        },
+        {
+          "text": "are",
+          "start": 8.375,
+          "end": 8.69
+        },
+        {
+          "text": "spoken.",
+          "start": 8.75,
+          "end": 9.245
+        }
+      ]
+    }
+  ]
+}

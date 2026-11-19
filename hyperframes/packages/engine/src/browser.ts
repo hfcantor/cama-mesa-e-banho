@@ -85,8 +85,13 @@ export async function openComposition(browser: Browser, url: string, o: OpenOpti
   page.on('console', (m) => {
     if (m.type() === 'error' || m.type() === 'warning') logs.push({ type: 'console', level: m.type(), text: m.text() });
   });
-  page.on('pageerror', (e) => logs.push({ type: 'pageerror', text: e.stack ?? e.message }));
-  page.on('requestfailed', (r) => logs.push({ type: 'requestfailed', text: r.failure()?.errorText ?? 'failed', url: r.url() }));
+  page.on('pageerror', (e) => logs.push({ type: 'pageerror', text: e.stack || e.message || String(e) }));
+  page.on('requestfailed', (r) => {
+    const err = r.failure()?.errorText ?? 'failed';
+    // Media elements routinely abort their own range requests (e.g. when paused/muted): not an error.
+    if (err === 'net::ERR_ABORTED' && ['media', 'image'].includes(r.resourceType())) return;
+    logs.push({ type: 'requestfailed', text: err, url: r.url() });
+  });
   page.on('response', (r) => {
     if (r.status() >= 400) logs.push({ type: 'http-error', text: `HTTP ${r.status()}`, url: r.url() });
   });

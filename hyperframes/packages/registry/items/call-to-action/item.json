@@ -1,0 +1,34 @@
+{
+  "name": "call-to-action",
+  "type": "block",
+  "title": "Call to action",
+  "tags": [
+    "social",
+    "cta"
+  ],
+  "description": "Pill button with a pulse, e.g. 'Follow for more'.",
+  "params": {
+    "text": {
+      "type": "string",
+      "default": "Follow for more",
+      "description": "button text"
+    },
+    "color": {
+      "type": "color",
+      "default": "#ef4444",
+      "description": "button colour"
+    },
+    "start": {
+      "type": "number",
+      "default": 0,
+      "description": "start (s)"
+    },
+    "duration": {
+      "type": "number",
+      "default": 3,
+      "description": "duration (s)"
+    }
+  },
+  "snippet": "snippet.html",
+  "head": "head.html"
+}

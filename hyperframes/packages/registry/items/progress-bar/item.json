@@ -1,0 +1,34 @@
+{
+  "name": "progress-bar",
+  "type": "block",
+  "title": "Progress bar",
+  "tags": [
+    "ui",
+    "timeline"
+  ],
+  "description": "A bar that fills over the whole composition (or its own duration).",
+  "params": {
+    "color": {
+      "type": "color",
+      "default": "#22d3ee",
+      "description": "fill colour"
+    },
+    "height": {
+      "type": "number",
+      "default": 10,
+      "description": "bar height (px)"
+    },
+    "start": {
+      "type": "number",
+      "default": 0,
+      "description": "start (s)"
+    },
+    "duration": {
+      "type": "number",
+      "default": 10,
+      "description": "duration (s)"
+    }
+  },
+  "snippet": "snippet.html",
+  "head": "head.html"
+}

@@ -1,0 +1,17 @@
+<div id="grid-{{uid}}" class="hf-grid" data-name="Dot grid" data-start="{{start}}" data-duration="{{duration}}" style="--dot: {{color}}"></div>
+<script>
+  (() => {
+    const root = document.getElementById('grid-{{uid}}');
+    const cols = 16, rows = 9;
+    for (let i = 0; i < cols * rows; i++) root.append(document.createElement('i'));
+    const { animate, stagger } = anime;
+    const a = animate(root.querySelectorAll('i'), {
+      scale: [{ to: 1.8, duration: 500 }, { to: 1, duration: 700 }],
+      opacity: [{ to: 1, duration: 400 }, { to: 0.35, duration: 800 }],
+      delay: stagger(60, { grid: [cols, rows], from: 'center' }),
+      ease: 'inOutQuad',
+      autoplay: false,
+    });
+    hf.register(a, { start: 'grid-{{uid}}' });
+  })();
+</script>

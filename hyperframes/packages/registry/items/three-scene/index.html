@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>{{title}}</title>
+  <link rel="stylesheet" href="/__hf/fonts/inter/index.css">
+  <script type="importmap">{"imports":{"three":"/__hf/lib/three.module.js","three/addons/":"/__hf/lib/three/addons/"}}</script>
+</head>
+<body>
+  <div id="stage" data-composition data-width="1920" data-height="1080" data-fps="30" data-duration="6" data-background="#05060a">
+
+    <canvas id="gl" style="position:absolute;inset:0;width:100%;height:100%"></canvas>
+    <h1 data-start="0.5" data-duration="5" data-enter="fade-up 0.8" data-exit="fade 0.5"
+        style="position:absolute;left:8%;bottom:10%;margin:0;color:#fff;font:800 96px 'Inter Variable',system-ui">{{title}}</h1>
+
+  </div>
+
+<script type="module">
+  import * as THREE from 'three';
+  import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
+  const canvas = document.getElementById('gl');
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, preserveDrawingBuffer: true });
+  renderer.setPixelRatio(window.devicePixelRatio);
+  renderer.setSize(1920, 1080, false);
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  const scene = new THREE.Scene();
+  scene.fog = new THREE.Fog(0x05060a, 8, 22);
+  const camera = new THREE.PerspectiveCamera(35, 1920 / 1080, 0.1, 100);
+  const group = new THREE.Group();
+  scene.add(group);
+  const colors = [0x22d3ee, 0xa78bfa, 0xf472b6, 0xfacc15];
+  for (let i = 0; i < 24; i++) {
+    const m = new THREE.Mesh(new RoundedBoxGeometry(0.9, 0.9, 0.9, 4, 0.12), new THREE.MeshStandardMaterial({ color: colors[i % 4], roughness: 0.35, metalness: 0.2 }));
+    const a = (i / 24) * Math.PI * 2;
+    m.position.set(Math.cos(a) * 4, Math.sin(a * 3) * 0.8, Math.sin(a) * 4);
+    group.add(m);
+  }
+  scene.add(new THREE.HemisphereLight(0xffffff, 0x223344, 1.2));
+  const sun = new THREE.DirectionalLight(0xffffff, 2.5); sun.position.set(5, 8, 6); scene.add(sun);
+  hf.onFrame((t) => {
+    group.rotation.y = t * 0.6;
+    group.children.forEach((m, i) => { m.rotation.x = t + i; m.rotation.y = t * 1.3 + i; });
+    camera.position.set(Math.sin(t * 0.25) * 10, 2.5 + Math.sin(t * 0.5), Math.cos(t * 0.25) * 10);
+    camera.lookAt(0, 0, 0);
+    renderer.render(scene, camera);
+  });
+</script>
+</body>
+</html>
