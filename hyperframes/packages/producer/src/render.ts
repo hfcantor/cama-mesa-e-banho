@@ -196,7 +196,8 @@ export async function renderProject(o: RenderOptions): Promise<RenderResult> {
           for (let i = from; i < to; i++) {
             abort();
             const t = plan.start + i / fps;
-            const buf = await captureFrame(comp, t, { format: frameFormat, quality: o.jpegQuality ?? 92, width: capW, height: capH });
+            // the clip is in CSS pixels; the device scale factor multiplies the output resolution
+            const buf = await captureFrame(comp, t, { format: frameFormat, quality: o.jpegQuality ?? 92, width: compW, height: compH });
             await enc.write(buf);
             done++;
             const elapsed = (now() - startedAt) / 1000;

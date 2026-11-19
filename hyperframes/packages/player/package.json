@@ -1,0 +1,8 @@
+{
+  "name": "@hfr/player",
+  "version": "0.1.0",
+  "description": "<hf-player> web component: embeds a composition in an iframe with playback controls (postMessage protocol).",
+  "type": "module",
+  "exports": { ".": "./src/index.ts", "./element": "./src/element.ts" },
+  "dependencies": { "esbuild": "0.25.12" }
+}

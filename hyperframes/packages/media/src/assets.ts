@@ -89,7 +89,7 @@ export function contentMatchesExtension(file: string, head: Uint8Array): boolean
 
 export interface AssetEntry { path: string; type: AssetType | null; size: number; modified: number }
 
-const IGNORED_DIRS = new Set(['node_modules', '.git', '.hfr-cache', 'renders', '.DS_Store']);
+const IGNORED_DIRS = new Set(['node_modules', '.git', '.hfr-cache', 'renders', 'share', '.DS_Store']);
 
 export async function listAssets(root: string, dir = ''): Promise<AssetEntry[]> {
   const out: AssetEntry[] = [];
