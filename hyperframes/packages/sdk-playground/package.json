@@ -1,9 +1,0 @@
-{
-  "name": "@hfr/sdk-playground",
-  "version": "0.1.0",
-  "private": true,
-  "description": "Runnable SDK examples (node examples/<name>.ts). Each one renders a real video into ./out.",
-  "type": "module",
-  "scripts": { "all": "node run-all.ts" },
-  "dependencies": { "@hfr/sdk": "0.1.0" }
-}

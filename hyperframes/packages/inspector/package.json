@@ -1,8 +1,0 @@
-{
-  "name": "@hfr/inspector",
-  "version": "0.1.0",
-  "description": "Runtime diagnostics: loads compositions in headless Chromium and checks errors, timing, fonts, layout, blank frames, determinism and A/V sync.",
-  "type": "module",
-  "exports": { ".": "./src/index.ts" },
-  "dependencies": { "@hfr/core": "0.1.0", "@hfr/engine": "0.1.0", "@hfr/media": "0.1.0" }
-}

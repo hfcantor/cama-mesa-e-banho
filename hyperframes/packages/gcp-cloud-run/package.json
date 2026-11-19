@@ -1,9 +1,0 @@
-{
-  "name": "@hfr/gcp-cloud-run",
-  "version": "0.1.0",
-  "description": "Google Cloud Run service: HTTP render endpoint reading projects from / writing videos to Cloud Storage.",
-  "type": "module",
-  "exports": { ".": "./src/server.ts" },
-  "scripts": { "start": "node src/main.ts" },
-  "dependencies": { "@hfr/cloud-common": "0.1.0", "@google-cloud/storage": "8.4.0" }
-}

@@ -1,9 +1,0 @@
-{
-  "name": "@hfr/registry",
-  "version": "0.1.0",
-  "description": "Component/template registry: discovery, parameters, insertion into compositions, local and remote (HTTP) registries.",
-  "type": "module",
-  "exports": { ".": "./src/index.ts" },
-  "files": ["src", "items"],
-  "dependencies": { "@hfr/core": "0.1.0" }
-}

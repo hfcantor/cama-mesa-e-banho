@@ -1,1 +1,0 @@
-{"name":"@hfr/core","version":"0.1.0","type":"module","exports":{".":"./src/index.ts"},"dependencies":{"esbuild":"0.25.12","parse5":"^8.0.0"}}

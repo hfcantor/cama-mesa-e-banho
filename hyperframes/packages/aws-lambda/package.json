@@ -1,8 +1,0 @@
-{
-  "name": "@hfr/aws-lambda",
-  "version": "0.1.0",
-  "description": "AWS Lambda (container image) handler: renders a project stored in S3 and uploads the video to S3.",
-  "type": "module",
-  "exports": { ".": "./src/handler.ts" },
-  "dependencies": { "@hfr/cloud-common": "0.1.0", "@aws-sdk/client-s3": "3.1161.0" }
-}

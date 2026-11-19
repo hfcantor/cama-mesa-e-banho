@@ -1,8 +1,0 @@
-{
-  "name": "@hfr/shader-transitions",
-  "version": "0.1.0",
-  "description": "Shader-based transitions: GLSL (WebGL, in-composition) and FFmpeg xfade (scene-level, producer).",
-  "type": "module",
-  "exports": { ".": "./src/index.ts", "./browser": "./src/browser.ts" },
-  "dependencies": { "esbuild": "0.25.12" }
-}
