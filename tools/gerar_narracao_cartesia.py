@@ -52,6 +52,24 @@ def carregar_env(caminho):
         pass
 
 
+def corrigir_wav(b):
+    """A Cartesia devolve o WAV em streaming, com tamanhos 0xFFFFFFFF no cabeçalho.
+    Grava os tamanhos reais para que qualquer player (e o decodeAudioData) leia o arquivo."""
+    import struct
+    if b[:4] != b"RIFF" or b[8:12] != b"WAVE":
+        return b
+    i = 12
+    while i + 8 <= len(b):
+        cid, size = b[i:i + 4], struct.unpack("<I", b[i + 4:i + 8])[0]
+        if cid == b"data":
+            real = len(b) - (i + 8)
+            if size != real:
+                b = b[:i + 4] + struct.pack("<I", real) + b[i + 8:]
+            return b[:4] + struct.pack("<I", len(b) - 8) + b[8:]
+        i += 8 + size + (size & 1)
+    return b
+
+
 def sintetizar(chave, texto, voz, lingua=None):
     corpo = {
         "model_id": MODELO,
@@ -74,7 +92,7 @@ def sintetizar(chave, texto, voz, lingua=None):
     )
     try:
         with urllib.request.urlopen(req, timeout=120) as resp:
-            return resp.read()  # bytes do WAV, não é JSON
+            return corrigir_wav(resp.read())  # bytes do WAV, não é JSON
     except urllib.error.HTTPError as e:
         sys.exit(f"Cartesia respondeu {e.code}: {e.read().decode('utf-8', 'replace')}")
 

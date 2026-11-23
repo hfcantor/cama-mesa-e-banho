@@ -9,6 +9,7 @@ import { SpaceWorld } from './three/worlds/space.js';
 import { VillageWorld } from './three/worlds/village.js';
 import { OceanWorld } from './three/worlds/ocean.js';
 import { LabWorld } from './three/worlds/lab.js';
+import { PalaceWorld } from './three/worlds/palace.js';
 import { exportMp4, canExportMp4 } from './core/exporter.js';
 
 const $ = (id) => document.getElementById(id);
@@ -42,7 +43,7 @@ async function boot() {
     app.stage = stage;
 
     const shared = {};
-    const worldDefs = [['space', SpaceWorld, 'Espaço: Terra e Lua'], ['village', VillageWorld, 'Vila do Tabocal'], ['ocean', OceanWorld, 'Litoral e marés'], ['lab', LabWorld, 'Observatório']];
+    const worldDefs = [['space', SpaceWorld, 'Espaço: Terra e Lua'], ['village', VillageWorld, 'Vila do Tabocal'], ['ocean', OceanWorld, 'Litoral e marés'], ['lab', LabWorld, 'Observatório'], ['palace', PalaceWorld, 'Palácio e decretos']];
     const needed = new Set(episode.scenes.map(s => s.world));
     const worlds = {};
     let i = 0;
