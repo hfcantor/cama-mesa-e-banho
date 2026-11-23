@@ -210,7 +210,53 @@ export class VillageWorld {
       c.geometry.setDrawRange(0, 0);
       s.add(c); this.cracks.push(c);
     }
-    this.state = { moonScale: 9, moonY: 70, night: 1, fire: 0, ring: 0, dawn: 0, quake: 0, crack: 0, windowsOn: 1 };
+    // objetos soltos pelo quintal (EP03: gravidade desligada). Só aparecem com state.props = 1.
+    this.floatGroup = new THREE.Group(); this.floatGroup.visible = false; s.add(this.floatGroup);
+    this.floaters = [];
+    const fr = rng(7);
+    const kinds = [
+      () => { // balde
+        const g = new THREE.Group();
+        const b = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.22, 0.42, 18, 1, true), new THREE.MeshStandardMaterial({ color: '#3d6fa8', roughness: 0.5, side: THREE.DoubleSide }));
+        const h = new THREE.Mesh(new THREE.TorusGeometry(0.28, 0.02, 6, 20, Math.PI), M('#cfd6e0')); h.position.y = 0.21;
+        g.add(b, h); return g;
+      },
+      () => new THREE.Mesh(new THREE.SphereGeometry(0.3, 20, 14), M('#f2c14e', { roughness: 0.4 })), // bola
+      () => { // chapéu de palha
+        const g = new THREE.Group(); const hm = M('#e2c071', { roughness: 0.95 });
+        const brim = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.52, 0.04, 24), hm);
+        const crown = new THREE.Mesh(new THREE.CylinderGeometry(0.24, 0.3, 0.26, 20), hm); crown.position.y = 0.14;
+        g.add(brim, crown); return g;
+      },
+      () => { // cadeira
+        const g = new THREE.Group(); const wm = M('#a0522d');
+        const seat = new THREE.Mesh(new THREE.BoxGeometry(0.55, 0.06, 0.55), wm); seat.position.y = 0.45;
+        const back = new THREE.Mesh(new THREE.BoxGeometry(0.55, 0.55, 0.05), wm); back.position.set(0, 0.75, -0.25);
+        g.add(seat, back);
+        [[-1, -1], [1, -1], [-1, 1], [1, 1]].forEach(([a, b]) => { const l = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.45, 0.06), wm); l.position.set(a * 0.24, 0.22, b * 0.24); g.add(l); });
+        return g;
+      },
+      () => { // caixote
+        const g = new THREE.Group();
+        const bx = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.5, 0.6), M('#c89b5a', { roughness: 0.9 }));
+        const ripa = new THREE.Mesh(new THREE.BoxGeometry(0.64, 0.08, 0.64), M('#8a6a3a')); ripa.position.y = 0.1;
+        g.add(bx, ripa); return g;
+      },
+      () => { // vaso de planta
+        const g = new THREE.Group();
+        const v = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.2, 0.34, 16), M('#c4552d'));
+        const pl = new THREE.Mesh(new THREE.IcosahedronGeometry(0.3, 1), M('#3f8f3a', { flatShading: true })); pl.position.y = 0.38;
+        g.add(v, pl); return g;
+      },
+    ];
+    for (let i = 0; i < 24; i++) {
+      const mesh = kinds[i % kinds.length]();
+      mesh.traverse(m => { if (m.isMesh) m.castShadow = true; });
+      const x = (fr() - 0.5) * 13, z = -3 + fr() * 8.5;
+      mesh.position.set(x, 0.2, z); this.floatGroup.add(mesh);
+      this.floaters.push({ mesh, x, z, y0: i % kinds.length === 1 ? 0.3 : 0.05, rise: 7 + fr() * 24, delay: fr(), spin: [(fr() - 0.5) * 2.4, (fr() - 0.5) * 2.4, (fr() - 0.5) * 2.4], ph: fr() * 6, drift: (fr() - 0.5) * 3 });
+    }
+    this.state = { moonScale: 9, moonY: 70, night: 1, fire: 0, ring: 0, dawn: 0, quake: 0, crack: 0, windowsOn: 1, props: 0, float: 0, bambooLift: 0 };
     this.impacts = [];
     this._spawned = new Set();
   }
@@ -271,6 +317,20 @@ export class VillageWorld {
     // meteoros e impactos (deterministas)
     this._meteors(t, dt, et);
     this.fireLight.intensity = st.fire * 25 + this._flash * 120;
+    // gravidade desligada (EP03): objetos soltos, bambuzais e árvores sobem por tempo/estado
+    this.floatGroup.visible = st.props > 0.5;
+    if (this.floatGroup.visible) {
+      const f = st.float;
+      this.floaters.forEach((o) => {
+        const k = Math.max(0, Math.min(1, (f - o.delay * 0.45) / (1 - o.delay * 0.45)));
+        const bob = Math.sin(t * 1.4 + o.ph) * 0.25 * k;
+        o.mesh.position.set(o.x + o.drift * k, o.y0 + k * o.rise + bob, o.z);
+        o.mesh.rotation.set(k * o.spin[0] * (1 + t * 0.35), k * o.spin[1] * (1 + t * 0.35), k * o.spin[2] * (1 + t * 0.35));
+      });
+    }
+    const bl = st.bambooLift || 0;
+    this.bamboos.forEach((b, i) => { b.position.y = bl * (4 + i * 1.3); b.rotation.z = Math.sin(t * 0.9 + i) * 0.07 * bl; });
+    this.trees.forEach((tr, i) => { tr.position.y = bl * (2.5 + i * 0.8) * Math.max(0, bl - 0.3); });
     this.tito.update(t, dt);
     [this.fireflies, this.dust, this.fire, this.smoke, this.debris].forEach(p => p.update(dt));
   }
