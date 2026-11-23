@@ -59,6 +59,20 @@ O serviço usado é `speech.platform.bing.com`, que precisa estar liberado na re
 proxy, o script usa `HTTPS_PROXY` sozinho. Ritmo e tom de cada fala ficam em `DIRECAO`,
 dentro do script.
 
+Outra alternativa, com a **Cartesia** (um POST HTTP por fala, sem SDK):
+
+```bash
+cp .env.example .env                     # preencha CARTESIA_API_KEY
+python3 tools/gerar_narracao_cartesia.py ep01              # todas as falas
+python3 tools/gerar_narracao_cartesia.py ep01 --so L03     # só uma
+python3 tools/gerar_narracao_cartesia.py ep01 --timings    # + tempos por palavra (faster-whisper)
+```
+
+Os WAV vão para `audio/ep01/narracao_cartesia/`, sem sobrescrever a narração atual. Para usá-los,
+troque `narration.dir` e `narration.timings` em `episodes/ep01/episode.js` para essa pasta. A
+chave fica só no `.env` (ignorado pelo git) e nunca chega ao navegador. Precisa liberar
+`api.cartesia.ai` na rede. Se o texto em português soar com sotaque errado, tente `--lingua pt`.
+
 - Ao carregar, o player lê a duração real de cada arquivo, e a linha do tempo inteira (cenas,
   câmeras, efeitos, trilha) se ajusta a ela.
 - As legendas usam o `timings.json`: cada palavra aparece quando é dita.
