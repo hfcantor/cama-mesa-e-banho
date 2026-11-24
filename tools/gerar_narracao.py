@@ -48,8 +48,31 @@ DIRECAO = {
 }
 
 
-async def gerar(fid, texto, voz, destino):
+def ler_vozes(ep):
+    """Voz/ritmo/tom por fala, lidos de episodes/<ep>/episode.js: voice: '...', rate: '-6%', pitch: '+2Hz'.
+    Permite vários personagens falando (narrador, figurantes) no mesmo episódio."""
+    src = (RAIZ / "episodes" / ep / "episode.js").read_text(encoding="utf-8")
+    cfg = {}
+    for linha in src.splitlines():
+        m = re.search(r"\bid:\s*'(L\d+)'", linha)
+        if not m:
+            continue
+        d = {}
+        for k in ("voice", "rate", "pitch"):
+            mm = re.search(k + r":\s*'([^']+)'", linha)
+            if mm:
+                d[k] = mm.group(1)
+        if d:
+            cfg[m.group(1)] = d
+    return cfg
+
+
+async def gerar(fid, texto, voz, destino, extra=None):
     rate, pitch = DIRECAO.get(fid, ("-6%", "-2Hz"))
+    extra = extra or {}
+    voz = extra.get("voice", voz)
+    rate = extra.get("rate", rate)
+    pitch = extra.get("pitch", pitch)
     com = edge_tts.Communicate(texto, voz, rate=rate, pitch=pitch, boundary="WordBoundary",
                                proxy=os.environ.get("HTTPS_PROXY") or os.environ.get("https_proxy"))
     palavras = []
@@ -69,6 +92,7 @@ async def main():
     voz = a[a.index("--voz") + 1] if "--voz" in a else VOZ_PADRAO
     so = set(a[a.index("--so") + 1].split(",")) if "--so" in a else None
     falas = ler_roteiro(ep)
+    vozes = ler_vozes(ep)
     pasta = RAIZ / "audio" / ep / "narracao"
     pasta.mkdir(parents=True, exist_ok=True)
     tpath = pasta / "timings.json"
@@ -77,7 +101,7 @@ async def main():
         if so and fid not in so:
             continue
         destino = pasta / f"{fid}.mp3"
-        rec = await gerar(fid, texto, voz, destino)
+        rec = await gerar(fid, texto, voz, destino, vozes.get(fid))
         al = alinhar(texto.split(), rec) if rec else None
         if al:
             timings[fid] = al

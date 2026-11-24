@@ -14,6 +14,7 @@ export class Character {
     const {
       skin = '#c98a5e', shirt = '#d94f2b', pants = '#2f4a7a', shoes = '#3b2a20',
       hair = '#2a1a12', hat = false, coat = false, glasses = false, scale = 1, kid = false,
+      apron = null, chefHat = false, tie = null, bun = false, beard = false, cap = null, dress = null,
     } = o;
     this.root = new THREE.Group();
     this.root.scale.setScalar(scale);
@@ -80,6 +81,26 @@ export class Character {
       [-1, 1].forEach(s => { const r = new THREE.Mesh(G('gl', () => new THREE.TorusGeometry(0.1, 0.012, 8, 24)), gm); r.position.set(s * headR * 0.36, headR * 1.05, headR * 0.93); this.head.add(r); });
       const br = new THREE.Mesh(G('glb', () => new THREE.BoxGeometry(0.08, 0.015, 0.015)), gm); br.position.set(0, headR * 1.08, headR * 0.95); this.head.add(br);
     }
+    if (chefHat) {
+      const wm = mat('#ffffff', { roughness: 0.9 });
+      const band = new THREE.Mesh(new THREE.CylinderGeometry(headR * 0.9, headR * 0.95, 0.12, 20), wm); band.position.y = headR * 1.75;
+      const puff = new THREE.Mesh(new THREE.SphereGeometry(headR * 0.95, 20, 14), wm); puff.position.y = headR * 2.25; puff.scale.set(1, 0.8, 1);
+      this.head.add(band, puff);
+    }
+    if (cap) {
+      const cm = mat(cap, { roughness: 0.8 });
+      const dome = new THREE.Mesh(new THREE.SphereGeometry(headR * 1.06, 20, 14, 0, Math.PI * 2, 0, Math.PI * 0.45), cm); dome.position.y = headR * 1.0;
+      const visor = new THREE.Mesh(new THREE.CylinderGeometry(headR * 0.9, headR * 0.9, 0.04, 20, 1, false, -Math.PI * 0.5, Math.PI), cm); visor.position.set(0, headR * 1.55, headR * 0.7); visor.scale.set(1, 1, 0.7);
+      this.head.add(dome, visor);
+    }
+    if (bun) {
+      const bm = mat(hair, { roughness: 0.9 });
+      const b = new THREE.Mesh(new THREE.SphereGeometry(headR * 0.38, 14, 10), bm); b.position.set(0, headR * 2.1, -headR * 0.35); this.head.add(b);
+    }
+    if (beard) {
+      const bm = mat(hair, { roughness: 0.95 });
+      const b = new THREE.Mesh(new THREE.SphereGeometry(headR * 0.62, 16, 10, 0, Math.PI * 2, Math.PI * 0.35, Math.PI * 0.5), bm); b.position.set(0, headR * 0.62, headR * 0.28); b.scale.set(1, 0.9, 0.85); this.head.add(b);
+    }
     if (hat) {
       const hmM = mat('#e2c071', { roughness: 0.95 });
       const brim = new THREE.Mesh(G('brim', () => new THREE.CylinderGeometry(headR * 1.75, headR * 1.85, 0.03, 32)), hmM);
@@ -90,6 +111,19 @@ export class Character {
       band.position.y = headR * 1.6;
       const hatG = new THREE.Group(); hatG.add(brim, crown, band); hatG.rotation.x = -0.12;
       this.head.add(hatG); this.hat = hatG;
+    }
+    if (apron) {
+      const ap = new THREE.Mesh(new THREE.BoxGeometry(kid ? 0.4 : 0.46, torsoH * 0.9, 0.04), mat(apron, { roughness: 0.9 }));
+      ap.position.set(0, torsoH * 0.45, kid ? 0.2 : 0.22); this.torso.add(ap);
+      const strap = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.34, 0.04), mat(apron)); strap.position.set(0, torsoH * 0.95, 0.2); this.torso.add(strap);
+    }
+    if (tie) {
+      const tm = new THREE.Mesh(new THREE.ConeGeometry(0.07, 0.36, 4), mat(tie, { roughness: 0.6 })); tm.rotation.x = Math.PI; tm.position.set(0, torsoH * 0.62, 0.24); tm.scale.z = 0.4; this.torso.add(tm);
+      const kn = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.07, 0.05), mat(tie)); kn.position.set(0, torsoH * 0.88, 0.235); this.torso.add(kn);
+    }
+    if (dress) {
+      const dm = new THREE.Mesh(new THREE.CylinderGeometry(0.25, 0.44, 0.7, 18, 1, true), mat(dress, { side: THREE.DoubleSide, roughness: 0.8 }));
+      dm.position.y = 0.0; this.hips.add(dm);
     }
     // braços
     this.arms = [-1, 1].map(s => {
@@ -118,7 +152,7 @@ export class Character {
     this.root.traverse(m => { if (m.isMesh) { m.castShadow = true; m.receiveShadow = true; } });
 
     // Estado de pose (o roteiro manipula estes valores)
-    this.pose = { walk: 0, run: 0, armsUp: 0, point: 0, cover: 0, scared: 0, surprise: 0, smile: 0.3, sleep: 0, lookYaw: 0, lookPitch: 0, typing: 0, shake: 0, wave: 0 };
+    this.pose = { walk: 0, run: 0, armsUp: 0, point: 0, cover: 0, scared: 0, surprise: 0, smile: 0.3, sleep: 0, lookYaw: 0, lookPitch: 0, typing: 0, shake: 0, wave: 0, talk: 0, laugh: 0 };
     this.cur = { ...this.pose };
     this.phase = 0;
   }
@@ -169,7 +203,13 @@ export class Character {
       e.brow.position.y = c.surprise * 0.05 + c.scared * 0.03;
       e.brow.rotation.z = e.s * (c.scared * 0.35 - c.smile * 0.05) * -1;
     });
-    const open = Math.max(c.surprise, c.scared * 0.6);
-    this.mouth.scale.set(1 - open * 0.25 + c.smile * 0.4, 0.22 + open * 0.95, 0.4);
+    const talkOpen = c.talk * (0.25 + 0.3 * Math.abs(Math.sin(t * 13 + this.phase * 0.0)));
+    const laughOpen = c.laugh * (0.55 + 0.35 * Math.abs(Math.sin(t * 11)));
+    const open = Math.max(c.surprise, c.scared * 0.6, talkOpen, laughOpen);
+    this.mouth.scale.set(1 - open * 0.25 + c.smile * 0.4 + c.laugh * 0.3, 0.22 + open * 0.95, 0.4);
+    // riso: tronco treme e cabeça vai para trás
+    this.torso.rotation.z += Math.sin(t * 22) * 0.05 * c.laugh;
+    this.hips.position.y += Math.abs(Math.sin(t * 11)) * 0.05 * c.laugh;
+    this.head.rotation.x += c.laugh * 0.25;
   }
 }
