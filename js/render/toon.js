@@ -52,6 +52,11 @@ export function drawStickman(g, t, o) {
   for (let i = 0; i < 6; i++) pts.push([92 - (i + 0.5) * (184 / 6), i % 2 ? -4 : -26]);
   pts.push([-92, 0]);
   poly(g, pts.map(([px, py], i) => [px + jit(t, i, 2.2), py + jit(t, i + 40, 2.2)]), tunic, 8);
+  if (o.spots) { // pele de onça: manchas escuras recortadas na túnica
+    g.save(); g.beginPath(); pts.forEach(([px, py], i) => (i ? g.lineTo(px, py) : g.moveTo(px, py))); g.closePath(); g.clip();
+    [[-34, top + 40], [26, top + 52], [-6, top + 96], [44, top + 120], [-46, top + 134], [10, top + 150], [-18, top + 28]].forEach(([sx, sy], i) => { ell(g, sx, sy, 15 + (i % 3) * 3, 11 + (i % 2) * 4, o.spots, 0, i * 0.7); });
+    g.restore();
+  }
   // costura/mancha na camiseta
   g.beginPath(); g.moveTo(-30, top + 70); g.lineTo(-10, top + 110); g.lineTo(-34, top + 120); g.fillStyle = 'rgba(0,0,0,0.12)'; g.fill();
   // pescoço
@@ -262,7 +267,7 @@ export function landCanvas() {
 }
 
 // céu em gradiente: alt (px de altitude) escurece o azul; t anima as nuvens
-export function drawSky(g, t, alt = 0, dusk = 0) {
+export function drawSky(g, t, alt = 0, dusk = 0, night = 0) {
   const k = clamp01(alt / 2600);
   const gr = g.createLinearGradient(0, 0, 0, H);
   const c0 = [lerp(126, 40, k), lerp(200, 110, k), lerp(238, 210, k)];
@@ -270,6 +275,15 @@ export function drawSky(g, t, alt = 0, dusk = 0) {
   const mix = (a, b, m) => a.map((v, i) => Math.round(lerp(v, b[i], m)));
   const d0 = mix(c0, [250, 160, 110], dusk), d1 = mix(c1, [255, 224, 160], dusk);
   gr.addColorStop(0, `rgb(${d0})`); gr.addColorStop(0.62, `rgb(${d1})`); gr.addColorStop(1, `rgb(${d1})`);
+  if (night > 0) {
+    const ng = g.createLinearGradient(0, 0, 0, H); ng.addColorStop(0, '#0a1030'); ng.addColorStop(0.65, '#1b2a5c'); ng.addColorStop(1, '#2b3a70');
+    g.fillStyle = gr; g.fillRect(-MX, -MY, W + 2 * MX, H + 2 * MY);
+    g.globalAlpha = night; g.fillStyle = ng; g.fillRect(-MX, -MY, W + 2 * MX, H + 2 * MY); g.globalAlpha = 1;
+    const sr = rand(3);
+    for (let i = 0; i < 70; i++) { const sx = sr() * W, sy = sr() * 900, tw = 0.5 + 0.5 * Math.sin(t * 2 + i); g.fillStyle = `rgba(255,255,230,${night * (0.35 + 0.5 * tw)})`; g.beginPath(); g.arc(sx, sy, 2 + (i % 3), 0, TAU); g.fill(); }
+    g.globalAlpha = night; circ(g, 800, 330, 80, '#fff6cf', 7); g.globalAlpha = 1;
+    return;
+  }
   g.fillStyle = gr; g.fillRect(-MX, -MY, W + 2 * MX, H + 2 * MY);
   const sun = g.createRadialGradient(880, 300 + alt * 0.1, 10, 880, 300 + alt * 0.1, 420);
   sun.addColorStop(0, 'rgba(255,250,200,0.9)'); sun.addColorStop(1, 'rgba(255,250,200,0)');
@@ -334,4 +348,137 @@ export function drawRuler(g, x, ground, pxPerM, upToM, markM) {
     g.fillStyle = '#e5202a'; g.fillRect(x - 130, y - 4, 120, 8);
     g.font = '900 34px Montserrat, Arial Black, sans-serif'; g.textAlign = 'right'; g.fillText('1,7 m', x - 140, y + 12);
   }
+}
+
+
+// =============================================================== PRÉ-HISTÓRIA (EP04)
+// savana vista pela boca da caverna
+export function drawSavanna(g, t, night = 0) {
+  const hill = (y0, amp, col, ph) => {
+    g.beginPath(); g.moveTo(-MX, 1200);
+    for (let x = -MX; x <= W + MX; x += 20) g.lineTo(x, y0 + Math.sin(x * 0.006 + ph) * amp + Math.sin(x * 0.019 + ph) * amp * 0.3);
+    g.lineTo(W + MX, 1200); g.closePath(); g.fillStyle = col; g.fill(); stroke(g, 6);
+  };
+  hill(760, 30, '#c9c46a', 0.5); hill(860, 24, '#a9b955', 2.1);
+  // acácia
+  g.save(); g.translate(700, 800);
+  seg(g, 0, 0, 6, -150, 14, -8, -80); seg(g, 6, -110, 70, -170, 9); seg(g, 6, -130, -60, -180, 9);
+  ell(g, 6, -200, 130, 44, '#5f9a38', 8); ell(g, -50, -178, 60, 24, '#6fae42', 0);
+  g.restore();
+  g.fillStyle = '#a9b955'; g.fillRect(-MX, 900, W + 2 * MX, 300);
+  if (night > 0) { g.fillStyle = `rgba(10,20,60,${0.55 * night})`; g.fillRect(-MX, 560, W + 2 * MX, 700); }
+}
+
+let caveCache = null;
+export function caveCanvas() {
+  if (caveCache) return caveCache;
+  const c = mk(LAND_W, LAND_H), g = c.getContext('2d'), r = rand(23);
+  g.translate(MX, MY);
+  // parede de rocha
+  const rg = g.createLinearGradient(0, 0, 0, H); rg.addColorStop(0, '#6e4a33'); rg.addColorStop(0.6, '#4a3020'); rg.addColorStop(1, '#2e1d12');
+  g.fillStyle = rg; g.fillRect(-MX, -MY, W + 2 * MX, H + 2 * MY);
+  for (let i = 0; i < 70; i++) {
+    const cx = -MX + r() * (W + 2 * MX), cy = -MY + r() * (H + 2 * MY), rr = 50 + r() * 140, n = 5 + Math.floor(r() * 3);
+    const pts = Array.from({ length: n }, (_, k) => { const a = (k / n) * TAU + r() * 0.5; return [cx + Math.cos(a) * rr * (0.7 + r() * 0.5), cy + Math.sin(a) * rr * (0.6 + r() * 0.5)]; });
+    g.beginPath(); pts.forEach(([x, y], k) => (k ? g.lineTo(x, y) : g.moveTo(x, y))); g.closePath();
+    g.fillStyle = r() > 0.5 ? 'rgba(255,220,170,0.07)' : 'rgba(0,0,0,0.12)'; g.fill();
+    g.strokeStyle = 'rgba(25,12,4,0.55)'; g.lineWidth = 5; g.lineJoin = 'round'; g.stroke();
+  }
+  // abertura em arco (transparente)
+  g.save(); g.globalCompositeOperation = 'destination-out'; g.fillStyle = '#000';
+  g.beginPath(); g.moveTo(190, 1090); g.lineTo(190, 640); g.bezierCurveTo(190, 120, 890, 120, 890, 640); g.lineTo(890, 1090); g.closePath(); g.fill(); g.restore();
+  g.beginPath(); g.moveTo(190, 1090); g.lineTo(190, 640); g.bezierCurveTo(190, 120, 890, 120, 890, 640); g.lineTo(890, 1090);
+  g.strokeStyle = INK; g.lineWidth = 14; g.lineJoin = 'round'; g.stroke();
+  g.strokeStyle = 'rgba(255,225,180,0.35)'; g.lineWidth = 6; g.stroke();
+  // chão de terra
+  const fg = g.createLinearGradient(0, 1060, 0, H); fg.addColorStop(0, '#9a6a42'); fg.addColorStop(1, '#5d3b22');
+  g.beginPath(); g.moveTo(-MX, 1100); g.lineTo(190, 1090); g.lineTo(890, 1090); g.lineTo(W + MX, 1100); g.lineTo(W + MX, H + MY); g.lineTo(-MX, H + MY); g.closePath();
+  g.fillStyle = fg; g.fill(); g.beginPath(); g.moveTo(-MX, 1100); g.lineTo(190, 1090); g.lineTo(890, 1090); g.lineTo(W + MX, 1100); stroke(g, 8);
+  for (let i = 0; i < 40; i++) { const x = r() * W, y = 1150 + r() * 700; g.fillStyle = 'rgba(40,20,5,0.14)'; g.beginPath(); g.ellipse(x, y, 20 + r() * 50, 6 + r() * 10, 0, 0, TAU); g.fill(); }
+  // palha, lança e tigela (como na referência)
+  ell(g, 330, 1560, 250, 56, '#d8b13e', 7);
+  for (let i = 0; i < 30; i++) seg(g, 120 + r() * 420, 1540 + r() * 40, 120 + r() * 420 + (r() - 0.5) * 60, 1510 + r() * 50, 3);
+  seg(g, 120, 1700, 215, 1010, 10); poly(g, [[190, 1020], [232, 1000], [218, 940]], '#cfc7b8', 7);
+  g.beginPath(); g.ellipse(120, 1740, 70, 26, 0, 0, TAU); g.fillStyle = '#8a5a30'; g.fill(); stroke(g, 7);
+  ell(g, 120, 1732, 52, 12, '#b83a2a', 5);
+  [[820, 1640, 70], [930, 1700, 50], [760, 1760, 40]].forEach(([x, y, rr]) => { ell(g, x, y, rr, rr * 0.6, '#8d8378', 7); });
+  return (caveCache = c);
+}
+export function drawCave(g, t, { night = 0, outsideNight = night } = {}) {
+  drawSky(g, t, 0, 0, outsideNight);
+  drawSavanna(g, t, outsideNight);
+  g.drawImage(caveCanvas(), -MX, -MY);
+}
+
+// tom de ambiente: frio (azul), escuro com holofote, calor (laranja)
+export function tint(g, color, a) { g.save(); g.globalCompositeOperation = 'multiply'; g.globalAlpha = a; g.fillStyle = color; g.fillRect(0, 0, W, H); g.restore(); }
+export function darkness(g, a, cx = 540, cy = 1000, r = 380) {
+  const gr = g.createRadialGradient(cx, cy, r * 0.25, cx, cy, r * 2.6);
+  gr.addColorStop(0, 'rgba(3,4,14,0)'); gr.addColorStop(0.35, `rgba(3,4,14,${a * 0.75})`); gr.addColorStop(1, `rgba(3,4,14,${a})`);
+  g.fillStyle = gr; g.fillRect(0, 0, W, H);
+}
+export function glow(g, x, y, r, a = 0.5) {
+  const gr = g.createRadialGradient(x, y, 10, x, y, r); gr.addColorStop(0, `rgba(255,170,60,${a})`); gr.addColorStop(1, 'rgba(255,120,20,0)');
+  g.save(); g.globalCompositeOperation = 'lighter'; g.fillStyle = gr; g.fillRect(0, 0, W, H); g.restore();
+}
+
+// fogueira: toras, pedras e chamas em camadas
+export function drawFire(g, t, x, y, s = 1, k = 1) {
+  if (k <= 0.01) return;
+  g.save(); g.translate(x, y); g.scale(s, s);
+  [[-70, 0.35], [70, -0.35]].forEach(([dx, rot]) => { g.save(); g.translate(dx * 0.3, -14); g.rotate(rot); poly(g, [[-90, -16], [90, -16], [90, 16], [-90, 16]], '#8a5a30', 7); g.restore(); });
+  const flame = (w, h, col, ph, lw) => {
+    const hh = h * k * (0.9 + 0.12 * Math.sin(t * 11 + ph)), ww = w * (0.95 + 0.06 * Math.sin(t * 9 + ph));
+    g.beginPath(); g.moveTo(-ww, -10); g.bezierCurveTo(-ww * 1.1, -hh * 0.5, -ww * 0.2, -hh * 0.55, Math.sin(t * 7 + ph) * 12, -hh);
+    g.bezierCurveTo(ww * 0.3, -hh * 0.55, ww * 1.1, -hh * 0.45, ww, -10); g.closePath(); g.fillStyle = col; g.fill(); if (lw) stroke(g, lw);
+  };
+  flame(95, 250, '#ff8a1f', 0, 8); flame(62, 180, '#ffc83a', 1.3, 0); flame(30, 105, '#fff4b8', 2.1, 0);
+  for (let i = 0; i < 7; i++) { const u = ((t * 0.9 + i / 7) % 1); g.fillStyle = `rgba(255,190,70,${1 - u})`; g.beginPath(); g.arc(Math.sin(i * 3.1 + t) * 60, -200 - u * 220, 5 - u * 3, 0, TAU); g.fill(); }
+  [[-110, 4, 34], [100, 6, 30], [-40, 18, 26], [50, 18, 24]].forEach(([dx, dy, rr]) => ell(g, dx, dy, rr, rr * 0.6, '#8d8378', 7));
+  g.restore();
+}
+
+// olhos amarelos no escuro
+export function drawEyes(g, x, y, s = 1, blink = 0) {
+  g.save(); g.translate(x, y); g.scale(s, s);
+  [-46, 46].forEach((dx) => {
+    g.save(); g.translate(dx, 0);
+    g.fillStyle = '#ffe14a'; g.shadowColor = '#ffd21a'; g.shadowBlur = 24;
+    g.beginPath(); g.ellipse(0, 0, 26, 20 * (1 - blink * 0.9), 0, 0, TAU); g.fill(); g.shadowBlur = 0;
+    g.fillStyle = '#1a0d00'; g.beginPath(); g.ellipse(0, 0, 6, 17 * (1 - blink * 0.9), 0, 0, TAU); g.fill();
+    g.restore();
+  });
+  g.restore();
+}
+
+// vaporzinho da respiração no frio
+export function drawBreath(g, t, x, y, s = 1) {
+  for (let i = 0; i < 4; i++) { const u = ((t * 0.7 + i / 4) % 1); g.globalAlpha = (1 - u) * 0.8; circ(g, x + u * 120 * s, y - u * 70 * s, (14 + u * 30) * s, '#ffffff', 0); }
+  g.globalAlpha = 1;
+}
+
+// pedaço de carne no osso
+export function drawMeat(g, s = 1) {
+  g.save(); g.scale(s, s);
+  seg(g, -60, 30, 60, -30, 14); circ(g, -70, 38, 16, '#fdfaf3', 6); circ(g, 70, -38, 16, '#fdfaf3', 6);
+  g.beginPath(); g.ellipse(0, 0, 54, 34, -0.4, 0, TAU); g.fillStyle = '#b8473a'; g.fill(); stroke(g, 7);
+  g.beginPath(); g.ellipse(-8, -6, 22, 10, -0.4, 0, TAU); g.fillStyle = '#e0867a'; g.fill();
+  g.restore();
+}
+
+// ícones de "pintura rupestre" para a cena do metal
+export function drawIcon(g, kind, size = 150) {
+  g.save(); g.scale(size / 150, size / 150); g.strokeStyle = INK; g.lineWidth = 9; g.lineCap = 'round'; g.lineJoin = 'round';
+  if (kind === 'panela') { poly(g, [[-60, -30], [60, -30], [50, 40], [-50, 40]], '#c4552d', 8); ell(g, 0, -30, 60, 14, '#e7916a', 7); seg(g, -60, -20, -85, -10, 8); seg(g, 60, -20, 85, -10, 8); }
+  if (kind === 'espada') { poly(g, [[-8, -70], [8, -70], [8, 30], [-8, 30]], '#c9d3dc', 7); seg(g, -34, 34, 34, 34, 10); seg(g, 0, 34, 0, 66, 10); }
+  if (kind === 'ponte') { seg(g, -80, 20, 80, 20, 12); g.beginPath(); g.moveTo(-70, 20); g.quadraticCurveTo(0, -70, 70, 20); g.stroke(); for (let x = -50; x <= 50; x += 25) seg(g, x, 20, x, -10 - (50 - Math.abs(x)) * 0.2, 5); seg(g, -80, 20, -80, 50, 10); seg(g, 80, 20, 80, 50, 10); }
+  if (kind === 'foguete') { poly(g, [[-20, 40], [-20, -30], [0, -70], [20, -30], [20, 40]], '#e8e8ee', 8); circ(g, 0, -10, 9, '#7ec4f0', 5); poly(g, [[-20, 20], [-42, 50], [-20, 40]], '#e5202a', 6); poly(g, [[20, 20], [42, 50], [20, 40]], '#e5202a', 6); }
+  g.restore();
+}
+export function drawX(g, size = 150, k = 1) {
+  g.save(); g.scale(size / 150, size / 150); g.strokeStyle = '#e5202a'; g.lineWidth = 16; g.lineCap = 'round';
+  const a = Math.min(1, k * 2), b = Math.max(0, k * 2 - 1);
+  g.beginPath(); g.moveTo(-70, -70); g.lineTo(-70 + 140 * a, -70 + 140 * a); g.stroke();
+  if (b > 0) { g.beginPath(); g.moveTo(70, -70); g.lineTo(70 - 140 * b, -70 + 140 * b); g.stroke(); }
+  g.restore();
 }
