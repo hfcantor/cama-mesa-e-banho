@@ -482,3 +482,6 @@ export function drawX(g, size = 150, k = 1) {
   if (b > 0) { g.beginPath(); g.moveTo(70, -70); g.lineTo(70 - 140 * b, -70 + 140 * b); g.stroke(); }
   g.restore();
 }
+
+// primitivas de desenho reutilizadas por outros módulos (js/render/bible.js)
+export { poly, circ, ell, seg, stroke, TAU };
