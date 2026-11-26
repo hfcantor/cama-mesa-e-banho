@@ -29,7 +29,7 @@ const LEVEL_COLOR = { 1: '#FFC83D', 2: '#FF9A3D', 3: '#FF5A4D' };
 // ------------------------------- itens de HUD -------------------------------
 // cada item: [tipo, ...args] → função (g, c, cfg)
 const ramp = (c, d = 0.2, t0 = 0.08) => clamp01((c.lt - t0) / d);
-const HUD = {
+export const HUD = {
   open: (g, c) => drawOpeningTitle(g, c.lt, c.dur, c.t),
   stamp: (g, c, cfg, [level, sub, o = {}]) => drawLevelStamp(g, level, sub, c.lt - 0.1, { y: 470, color: o.color || '#FFC83D' }),
   led: (g, c, cfg, [from, to, o = {}]) => {
@@ -61,7 +61,7 @@ const HUD = {
 };
 
 // efeitos sonoros automáticos por tipo de HUD (em segundos após o início do plano)
-const HUD_SFX = {
+export const HUD_SFX = {
   tag: [['pop', 0.1, { level: 0.22, freq: 560 }]], thought: [['pop', 0.12, { level: 0.2, freq: 620 }]],
   mark: [['ding', 0.15, { level: 0.14 }]], pop: [['impact', 0.05, { level: 0.55, size: 0.8 }], ['crack', 0.05, { level: 0.25 }]],
   stamp: [['impact', 0.12, { level: 0.75, size: 1 }]], ledBig: [['alarm', 0.0, { level: 0.05, dur: 1.2 }]],
