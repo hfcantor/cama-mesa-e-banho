@@ -9,6 +9,7 @@ import { SpaceWorld } from './three/worlds/space.js';
 import { VillageWorld } from './three/worlds/village.js';
 import { OceanWorld } from './three/worlds/ocean.js';
 import { LabWorld } from './three/worlds/lab.js';
+import { QuartoWorld } from './three/worlds/quarto.js';
 import { exportMp4, canExportMp4 } from './core/exporter.js';
 
 const $ = (id) => document.getElementById(id);
@@ -42,7 +43,7 @@ async function boot() {
     app.stage = stage;
 
     const shared = {};
-    const worldDefs = [['space', SpaceWorld, 'Espaço: Terra e Lua'], ['village', VillageWorld, 'Vila do Tabocal'], ['ocean', OceanWorld, 'Litoral e marés'], ['lab', LabWorld, 'Observatório']];
+    const worldDefs = [['space', SpaceWorld, 'Espaço: Terra e Lua'], ['village', VillageWorld, 'Vila do Tabocal'], ['ocean', OceanWorld, 'Litoral e marés'], ['lab', LabWorld, 'Observatório'], ['quarto', QuartoWorld, 'Quarto do Tito']];
     const needed = new Set(episode.scenes.map(s => s.world));
     const worlds = {};
     let i = 0;
@@ -88,7 +89,11 @@ async function boot() {
 function rebuild() {
   const tl = buildTimeline(app.episode, app.narration);
   app.timeline = tl;
-  app.music.setPlan(tl.scenes.map(s => ({ start: s.start, end: s.end, ...(s.def.music || {}) })));
+  // episódios com muitos cortes curtos definem a trilha à parte (musicPlan); os demais, por cena
+  const plan = app.episode.musicPlan
+    ? app.episode.musicPlan.map(m => ({ start: tl.T(m.from), end: m.to === 'end' ? tl.duration : tl.T(m.to), mood: m.mood, intensity: m.intensity }))
+    : tl.scenes.map(s => ({ start: s.start, end: s.end, ...(s.def.music || {}) }));
+  app.music.setPlan(plan);
   const wasT = app.player.time ? (app.player.timeline ? app.player.time() : 0) : 0;
   app.player.setContent(tl, app.music);
   app.director.setTimeline(tl);

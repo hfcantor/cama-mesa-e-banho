@@ -20,6 +20,22 @@ HTML, CSS e JavaScript, com Three.js para o 3D e Web Audio API para o som.
 | 11 | Chamada para ação | "E você? Comenta aí!" | vila |
 | 12 | Tela final | **HISTÓRIAS DO TABOCAL**, "Gostou dessa história?", "CURTA ❤️ COMENTE 💬 E SIGA O PERFIL!" | vila ao amanhecer |
 
+## Episódio 02: "E se você nunca trocasse o lençol?" (1:08 com a narração)
+
+Feito no estilo de cortes rápidos dos vídeos de referência: 46 cenas de 1 a 3 s ancoradas nas palavras da narração, closes em objetos, níveis numerados com carimbo, contador LED, selos de câmera lenta/rebobinando, etiquetas com ponto colorido, ✅/❌ e checklist.
+
+| Trecho | O que acontece |
+|---|---|
+| Gancho | Lençol limpo, Tito dormindo, calendário, "um terço da vida" |
+| **Nível 1 · 1 semana** | Suor, pele morta em câmera lenta, lupa no tecido, primeiro ácaro, banquete, colônia crescendo |
+| **Nível 2 · 1 mês** | "Restaurante do Travesseiro" (neon, chef, fila), coceira, nariz entupido, ATCHIM!, prédio de ácaros, chamada para curtir e seguir |
+| **Nível 3 · 1 ano** | Mancha, fungos, cheiro, "selva" na cama, Tito não consegue entrar no quarto |
+| Solução | Rebobinando, lençol novo caindo, ácaros fugindo com mala, checklist (lençol, travesseiro, fronhas), sono melhor, pergunta final |
+
+Arquivos: `episodes/ep02/lines.js` (falas), `episodes/ep02/episode.js` (cenas e efeitos), `js/three/worlds/quarto.js` (cenário 3D, lençol que suja conforme `state.dirt`, ácaros, prédio, porta), `js/render/overlays2.js` (carimbo, LED, selos, etiquetas, lupa, checklist). Abra com `?ep=ep02`.
+
+A trilha de EP02 é definida em `musicPlan` (trechos longos), porque as cenas curtas reiniciariam a música a cada corte. A narração usa a mesma ferramenta do EP01: `python3 tools/gerar_narracao.py ep02`. Os números citados (um terço da vida, troca semanal) devem ser conferidos antes de publicar.
+
 ## Como rodar
 
 Os módulos ES precisam de um servidor local; abrir o arquivo com `file://` não funciona.

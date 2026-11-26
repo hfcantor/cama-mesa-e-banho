@@ -30,7 +30,7 @@ RAIZ = Path(__file__).resolve().parent.parent
 VOZ_PADRAO = "pt-BR-AntonioNeural"
 
 # Interpretação por fala (velocidade e tom). Nada aqui muda o TEXTO.
-DIRECAO = {
+DIRECAO_EP01 = {
     "L01": ("-12%", "-4Hz"),  # pergunta de abertura, misteriosa
     "L02": ("-6%", "-2Hz"),   # gancho, contando um causo
     "L03": ("-14%", "-5Hz"),  # revelação dramática
@@ -47,9 +47,30 @@ DIRECAO = {
     "L14": ("-2%", "+1Hz"),   # chamada para comentar
 }
 
+# EP02: "E se você nunca trocasse o lençol?" (tom de curiosidade bem-humorada)
+DIRECAO_EP02 = {
+    "L01": ("-8%", "-2Hz"),   # pergunta de abertura
+    "L02": ("-4%", "-1Hz"),
+    "L03": ("-6%", "-1Hz"),   # carimbo do nível
+    "L04": ("+0%", "+0Hz"),
+    "L05": ("-2%", "-1Hz"),   # sorrisinho maldoso
+    "L06": ("-6%", "-1Hz"),
+    "L07": ("+2%", "+0Hz"),
+    "L08": ("+2%", "+0Hz"),   # lista rápida de sintomas
+    "L09": ("+4%", "+1Hz"),   # chamada leve para curtir
+    "L10": ("-8%", "-2Hz"),
+    "L11": ("-2%", "-2Hz"),   # nojo
+    "L12": ("-6%", "-2Hz"),
+    "L13": ("-4%", "+1Hz"),   # alívio
+    "L14": ("+2%", "+0Hz"),
+    "L15": ("-6%", "+1Hz"),
+    "L16": ("-2%", "+1Hz"),   # chamada para comentar
+}
+DIRECAO_POR_EP = {"ep01": DIRECAO_EP01, "ep02": DIRECAO_EP02}
 
-async def gerar(fid, texto, voz, destino):
-    rate, pitch = DIRECAO.get(fid, ("-6%", "-2Hz"))
+
+async def gerar(fid, texto, voz, destino, direcao=None):
+    rate, pitch = (direcao or DIRECAO_EP01).get(fid, ("-6%", "-2Hz"))
     com = edge_tts.Communicate(texto, voz, rate=rate, pitch=pitch, boundary="WordBoundary",
                                proxy=os.environ.get("HTTPS_PROXY") or os.environ.get("https_proxy"))
     palavras = []
@@ -77,7 +98,7 @@ async def main():
         if so and fid not in so:
             continue
         destino = pasta / f"{fid}.mp3"
-        rec = await gerar(fid, texto, voz, destino)
+        rec = await gerar(fid, texto, voz, destino, DIRECAO_POR_EP.get(ep))
         al = alinhar(texto.split(), rec) if rec else None
         if al:
             timings[fid] = al

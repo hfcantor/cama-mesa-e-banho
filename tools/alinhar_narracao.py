@@ -33,7 +33,9 @@ def norm(w):
 
 def ler_roteiro(ep):
     """Extrai {id: texto} de episodes/<ep>/episode.js (campos id/text das falas)."""
-    src = (RAIZ / "episodes" / ep / "episode.js").read_text(encoding="utf-8")
+    pasta = RAIZ / "episodes" / ep
+    # as falas ficam em episode.js (EP01) ou em lines.js (EP02 em diante)
+    src = "\n".join(f.read_text(encoding="utf-8") for f in (pasta / "lines.js", pasta / "episode.js") if f.exists())
     falas = {}
     for m in re.finditer(r"\{\s*id:\s*'(L\d+)',\s*text:\s*'((?:[^'\\]|\\.)*)'", src):
         falas[m.group(1)] = m.group(2).replace("\\'", "'")
