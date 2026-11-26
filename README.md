@@ -165,3 +165,22 @@ vêm do motor.
 
 - O @ do perfil na chamada do meio está em `js/series.js` (`@historiasdotabocal`). Troque
   pelo @ real.
+
+## Episódios 37 a 46: receitas caseiras (demonstradas, com quiz e cartão para salvar)
+
+Dez receitas, cada uma para um problema do dia a dia. Em todas: abertura com "para que serve", lista de ingredientes que aparece junto da fala, **passo a passo demonstrado em 3D** (encher, medir com colher rasa, despejar, mexer, coar, aplicar), medida em destaque, **quiz interativo** com contagem e resposta revelada, avisos de **cuidado / quando procurar um médico**, **cartão-resumo para salvar** e pergunta final para comentários. Todos terminam lembrando que a dica não substitui consulta médica.
+
+| EP | Receita | Para que serve |
+|---|---|---|
+| 37 | Soro caseiro (1 L de água, 2 colheres de sopa rasas de açúcar, 1 colher de café rasa de sal) | diarreia, vômito, calor forte |
+| 38 | Mel com limão | tosse seca e garganta irritada (mel: nunca para bebê < 1 ano) |
+| 39 | Gargarejo de água morna com sal (½ colher de chá em 1 copo) | dor de garganta |
+| 40 | Lavagem nasal (água fervida e morna, sal sem iodo) | nariz entupido |
+| 41 | Chá de camomila (infusão de 5 a 10 min) | relaxar antes de dormir |
+| 42 | Chá de hortelã | digestão e gases (cuidado com refluxo) |
+| 43 | Chá de gengibre | enjoo e náusea |
+| 44 | Compressa fria x quente | torção e pancada x cólica e dor muscular |
+| 45 | Babosa (e água corrente fresca primeiro) | queimadura de sol leve |
+| 46 | Banho de aveia | coceira e pele ressecada |
+
+Motor: `js/three/receitaProps.js` (recipientes com líquido e nível, colheres medidoras com pó, potes, limão, gengibre, ervas, babosa, membros, compressas, banheira, liquidificador, parede de azulejo) e `js/render/overlays4.js` (ingredientes, passo, medida, timer, quiz, aviso, cartão da receita). As medidas foram conferidas em fontes de saúde em português; **confira de novo antes de publicar**, principalmente as doses citadas.

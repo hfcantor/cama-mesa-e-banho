@@ -10,6 +10,7 @@ import { cameraPath, shake, clamp01 } from '../render/stage.js';
 import { drawEndCard, drawMidCTA, drawCounter } from '../render/overlays.js';
 import { drawLedPanel } from '../render/overlays2.js';
 import { drawFactTitle, drawBigStat, drawBanner } from '../render/overlays3.js';
+import { drawRecipeKicker, drawIngredients, drawStep, drawQty, drawTimer, drawCaution, drawQuiz, drawRecipeCard, drawDisclaimer } from '../render/overlays4.js';
 import { HUD as HUD1, HUD_SFX as SFX1 } from './levelEpisode.js';
 
 const lerp = (a, b, k) => a + (b - a) * k;
@@ -27,6 +28,16 @@ const HUD = {
   },
   banner: (g, c, cfg, [text, o = {}]) => drawBanner(g, c.lt - 0.05, text, o),
   led2: (g, c, cfg, [label, text, o = {}]) => drawLedPanel(g, label, text, 540, o.y || 1560, { alpha: clamp01(c.lt / 0.25), scale: o.scale || 0.82, danger: o.danger || 0 }),
+  // ---- receitas ----
+  kicker: (g, c, cfg, [o]) => drawRecipeKicker(g, c.lt - 0.05, o),
+  ingr: (g, c, cfg, [items, o = {}]) => drawIngredients(g, items.map(it => ({ ...it, at: c.T({ line: it.line, word: it.word, offset: 0.1 }) })), c.t, o),
+  step: (g, c, cfg, [o]) => drawStep(g, c.lt - 0.05, o),
+  qty: (g, c, cfg, [o]) => drawQty(g, c.lt - (o.delay ?? 0.05), o),
+  timer: (g, c, cfg, [o]) => drawTimer(g, c.lt - 0.05, c.u, o),
+  caution: (g, c, cfg, [o]) => drawCaution(g, c.lt - (o.delay ?? 0.05), o),
+  quiz: (g, c, cfg, [o]) => drawQuiz(g, c.lt - (o.delay ?? 0.05), o),
+  card: (g, c, cfg, [o]) => drawRecipeCard(g, c.lt - 0.05, c.t, { ...o, at: (o.at || []).map(a => c.T(a)) }),
+  disc: (g, c, cfg, [o = {}]) => drawDisclaimer(g, c.lt - 0.3, o),
   tintc: (g, c, cfg, [css, a]) => { g.save(); g.fillStyle = css; g.globalAlpha = typeof a === 'function' ? a(c) : a; g.fillRect(0, 0, 1080, 1920); g.restore(); },
   flashc: (g, c, cfg, [dur = 0.5, css = '#ffffff']) => { const k = 1 - clamp01(c.lt / dur); if (k > 0) { g.save(); g.fillStyle = css; g.globalAlpha = k * k * 0.9; g.fillRect(0, 0, 1080, 1920); g.restore(); } },
 };
@@ -34,6 +45,7 @@ const HUD_SFX = {
   ...SFX1,
   stat: [['impact', 0.08, { level: 0.55, size: 0.8 }]],
   banner: [['whoosh', 0.0, { dur: 0.4, level: 0.2 }]],
+  kicker: [['impact', 0.3, { level: 0.4, size: 0.8 }]], step: [['pop', 0.1, { level: 0.3, freq: 700 }]], qty: [['pop', 0.1, { level: 0.25, freq: 620 }]], caution: [['impact', 0.1, { level: 0.35, size: 0.7 }]], quiz: [['pop', 0.1, { level: 0.25, freq: 560 }]], ingr: [['pop', 0.15, { level: 0.2, freq: 600 }]], card: [['whoosh', 0.0, { dur: 0.5, level: 0.2 }]], timer: [['pop', 0.1, { level: 0.2, freq: 520 }]],
   title: [['impact', 0.5, { level: 0.5, size: 1 }]],
   led2: [['pop', 0.1, { level: 0.2, freq: 540 }]],
 };
@@ -132,7 +144,7 @@ export function buildFato(cfg) {
           if (r.shake) shake(c.cam, typeof r.shake === 'function' ? r.shake(c) : (r.shake === 'hit' ? Math.max(0, 1 - c.lt * 1.4) * 0.12 : r.shake), c.t);
         },
         draw2D(g, c) { r.hud.forEach(([type, ...args]) => HUD[type] && HUD[type](g, c, cfg, args)); },
-        noBug: first,
+        noBug: first, noSubtitles: !!P.noSubs,
       });
       const at = (o) => (first ? { at: 0.35 + o } : { ...start, offset: start.offset + o });
       r.hud.forEach(([type]) => (HUD_SFX[type] || []).forEach(([sfx, off, p]) => cues.push({ sfx, at: at(off), p })));

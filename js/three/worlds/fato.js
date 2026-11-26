@@ -20,9 +20,11 @@ export const SKIES = {
   eclipse: { top: '#02030a', mid: '#181030', bot: '#d08a46', glow: '#ffb060', ga: 0.9, stars: 0.7, fog: '#2a1e2a', fd: 0.004, amb: 0.35, sunC: '#ff9a50', sun: 0.5 },
   space: { top: '#010208', mid: '#02040c', bot: '#03060f', glow: '#3a3a8a', ga: 0.1, stars: 1, fog: '#000000', fd: 0, amb: 0.3, sunC: '#fff4e0', sun: 3.2 },
   redsky: { top: '#3a0a04', mid: '#a8280e', bot: '#ff8a2a', glow: '#ffd08a', ga: 0.8, stars: 0, fog: '#a8300e', fd: 0.004, amb: 0.8, sunC: '#ffb070', sun: 2.0 },
+  kitchen: { top: '#f4e7cf', mid: '#f2dfbd', bot: '#ecd5ab', glow: '#fff2cc', ga: 0.2, stars: 0, fog: '#f1e0c2', fd: 0.0035, amb: 1.25, sunC: '#fff3e0', sun: 2.2 },
+  bath: { top: '#dfeef7', mid: '#cfe6f2', bot: '#bcdbea', glow: '#ffffff', ga: 0.2, stars: 0, fog: '#d7e9f2', fd: 0.0035, amb: 1.3, sunC: '#ffffff', sun: 2.0 },
   lab: { top: '#1a2a4a', mid: '#2a3f6a', bot: '#3a5080', glow: '#8fb0ff', ga: 0.2, stars: 0.2, fog: '#1c2a46', fd: 0.003, amb: 1.1, sunC: '#ffffff', sun: 1.6 },
 };
-const GROUNDS = { sand: '#dcbd7e', grass: '#62ab4c', dirt: '#8c6c4b', stone: '#8d9098', moon: '#a9a59d', snow: '#eef2f6', road: '#4d5159', ash: '#6e6963', cobble: '#7d776b', floor: '#c9b79a', wood: '#9a6b3f' };
+const GROUNDS = { sand: '#dcbd7e', grass: '#62ab4c', dirt: '#8c6c4b', stone: '#8d9098', moon: '#a9a59d', snow: '#eef2f6', road: '#4d5159', ash: '#6e6963', cobble: '#7d776b', floor: '#c9b79a', wood: '#9a6b3f', counter: '#c58b52', tile: '#e9e4d6' };
 
 function groundTexture(kind, seed) {
   const c = document.createElement('canvas'); c.width = c.height = 256; const g = c.getContext('2d'), r = rng(seed || 4);

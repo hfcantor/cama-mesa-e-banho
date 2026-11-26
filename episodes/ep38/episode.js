@@ -1,0 +1,65 @@
+// EP38 — Receita caseira #2: mel com limão
+import { buildFato } from '../../js/core/factEpisode.js';
+import { LINES } from './lines.js';
+
+const T = (word) => ({ line: 'L12', word, offset: 0 });
+export default buildFato({
+  id: 'ep38', titulo: 'Mel com limão para a tosse', lines: LINES, defaultSubject: 'kit',
+  fato: {
+    sky: 'kitchen', ground: 'wood', seed: 8, center: [0, 0, 0],
+    props: [
+      { id: 'wall', type: 'wall', pos: [0, 0, -10], o: { tile: '#f6efe0', windowX: 5, shelfX: -8 } },
+      { id: 'mug', type: 'vessel', pos: [0, 0, 0], s: 1.7, o: { kind: 'mug', clear: true, c0: '#cfe9f5', c1: '#f2d56a', color: '#f4f1ea' }, v: { fill: 0.1 } },
+      { id: 'kettle', type: 'vessel', pos: [1.25, 0.9, 0], s: 1.4, o: { kind: 'kettle', c0: '#cfe9f5' }, v: { fill: 0.7, steam: 1, drop: 1.9 }, hide: true },
+      { id: 'board', type: 'board', pos: [-5, 0, 0.8], s: 1.0 },
+      { id: 'lemon', type: 'lemon', pos: [-5, 0.19, 0.8], s: 1.7 },
+      { id: 'lemonH', type: 'lemon', pos: [-0.2, 2.8, 0], s: 1.5, v: { cut: 1, pair: 0, squeeze: 0 }, hide: true },
+      { id: 'knife', type: 'knife', pos: [-3.6, 0.2, 1.4], s: 1.5, ry: 0.2 },
+      { id: 'honey', type: 'jar', pos: [4.4, 0, 0.8], s: 1.25, o: { text: 'MEL', sub: '100% PURO', fill: '#e8951a', shiny: true, lid: '#c98a1c', labelBg: '#fff6dc', labelFg: '#7a4a14' } },
+      { id: 'dip', type: 'dipper', pos: [0.1, 3.5, 0], s: 1.4, o: {}, v: { drip: 1, len: 1.0 }, hide: true },
+      { id: 'tito', type: 'char', pos: [7.0, 0, 3.2], ry: -0.5, hide: true, o: { shirt: '#4a86d6', pants: '#3a4a8a' } },
+      { id: 'baby', type: 'char', pos: [-6.8, 0, 3.2], ry: 0.5, hide: true, o: { shirt: '#ffd0e0', pants: '#ffd0e0', scale: 0.55 } },
+    ],
+  },
+  subjects: {
+    kit: { at: [-0.4, 2.2, 0], r: 7.4, az: 6, ly: 0.6, styles: ['wide', 'mid', 'high'] },
+    mug: { at: [0, 1.0, 0], r: 3.8, az: 8, ly: 0.7, styles: ['mid', 'close', 'low'] },
+    mugLow: { at: [0, 1.0, 0], r: 3.8, az: 8, ly: 1.5, styles: ['mid', 'close'] },
+    boardL: { at: [-4.4, 1.0, 0.8], r: 3.4, ly: 1.4, styles: ['mid', 'close'] },
+    honeyL: { at: [4.4, 1.7, 0.8], r: 3.4, ly: 1.3, styles: ['mid', 'close'] },
+    pourK: { at: [0.5, 2.2, 0], r: 4.8, ly: 1.0, styles: ['mid', 'low', 'close'], v: { kettle: { vis: 1, stream: 1 } } },
+    chop: { at: [-4.4, 1.0, 0.9], r: 3.6, ly: 1.0, styles: ['mid', 'close', 'macro'], v: { knife: { chop: 1 } } },
+    halves: { at: [-5, 0.8, 0.8], r: 3.0, ly: 1.0, styles: ['mid', 'close'], v: { lemon: { cut: 1 } } },
+    squeeze: { at: [0, 2.2, 0], r: 4.0, ly: 1.0, styles: ['mid', 'close', 'low'], v: { lemon: { vis: 0 }, lemonH: { vis: 1, squeeze: 1 } } },
+    honeyOpen: { at: [4.4, 1.7, 0.8], r: 3.2, ly: 1.2, styles: ['mid', 'close'], v: { honey: { open: 1 } } },
+    dripS: { at: [0.1, 2.4, 0], r: 4.2, ly: 1.0, styles: ['mid', 'close', 'low'], v: { dip: { vis: 1, drip: 1 }, lemonH: { vis: 0 }, honey: { open: 1 } } },
+    stir: { at: [0, 1.0, 0], r: 3.8, ly: 1.0, styles: ['mid', 'close', 'high'], v: { mug: { stir: 1, steam: 1 }, dip: { vis: 0 } } },
+    titoSleepy: { at: [7.0, 1.25, 3.2], r: 1.15, az: -20, ly: 0.2, styles: ['close', 'mid'], v: { tito: { vis: 1, pose: { sleep: 0.8, smile: 0.4 } } } },
+    tito: { at: [7.0, 1.25, 3.2], r: 1.15, az: -20, ly: 0.2, styles: ['close', 'mid'], v: { tito: { vis: 1, pose: { smile: 0.6 } } } },
+    titoCough: { at: [7.0, 1.25, 3.2], r: 1.15, az: -20, ly: 0.2, styles: ['close', 'mid'], v: { tito: { vis: 1, pose: { scared: 0.5, smile: 0, shake: 0.5 } } } },
+    baby: { at: [-6.8, 0.8, 3.2], r: 1.3, az: 12, ly: 0.2, styles: ['mid', 'close'], v: { baby: { vis: 1, pose: { sleep: 0.7, smile: 0 } } } },
+  },
+  plan: {
+    L01: { n: 4, s: ['kit', 'titoCough', 'honeyL', 'mug'], v: { tito: { vis: 1 } }, hud: [[0, 'kicker', { n: 2, name: 'MEL COM LIMÃO', uses: ['TOSSE SECA', 'GARGANTA ARRANHANDO', 'ANTES DE DORMIR'], color: 'orange' }], [1, 'pop', 'COF COF!', 540, 520, { size: 150, color: '#FF8A3D', dur: 1.2 }]] },
+    L02: { n: 4, s: ['mugLow', 'boardL', 'honeyL', 'mugLow'], v: { tito: { vis: 0 } }, hud: [['*', 'ingr', [
+      { amt: '1 COPO', name: 'Água morna', sub: 'cerca de 200 ml', line: 'L02', word: 5 },
+      { amt: '1 COLHER', name: 'Mel', sub: 'de sopa', line: 'L02', word: 9 },
+      { amt: '½ LIMÃO', name: 'Suco de limão', sub: 'espremido na hora', line: 'L02', word: 16 }], { y: 450, color: 'orange' }]] },
+    L03: { n: 3, s: ['pourK', 'pourK', 'mugLow'], la: { 'kettle.tilt': [0.62, 1.0], 'mug.fill': [0.1, 0.8], 'kettle.fill': [0.7, 0.4] }, hud: [[0, 'step', { n: 1, total: 4, title: 'ÁGUA MORNA', color: 'orange' }], [1, 'mark', 'no', 800, 600, 62], [1, 'tag', 'NÃO FERVENDO', { dot: 'red', size: 44, y: 700 }], [2, 'mark', 'ok', 800, 600, 62], [2, 'tag', 'MORNA, SEM ARDER', { dot: 'green', size: 44, y: 700 }]] },
+    L04: { n: 3, s: ['chop', 'halves', 'squeeze'], v: { kettle: { vis: 0, stream: 0, tilt: 0 } }, la: { 'mug.mix': [0, 0.45] }, hud: [[0, 'step', { n: 2, total: 4, title: 'LIMÃO', color: 'orange' }], [2, 'qty', { amount: '½ LIMÃO', note: 'esprema no copo', y: 560, color: 'gold' }]] },
+    L05: { n: 3, s: ['honeyOpen', 'dripS', 'dripS'], la: { 'mug.mix': [0.45, 0.9] }, hud: [[0, 'step', { n: 3, total: 4, title: 'MEL', color: 'gold' }], [1, 'qty', { amount: '1 COLHER DE SOPA', note: 'de mel puro', y: 560, color: 'gold' }]] },
+    L06: { n: 2, s: ['stir', 'mug'], v: { mug: { mix: 1 } }, hud: [[0, 'step', { n: 4, total: 4, title: 'MEXA E BEBA', color: 'green' }], [1, 'mark', 'ok', 800, 560, 64], [1, 'tag', 'PRONTO!', { dot: 'green', size: 46, y: 680 }]] },
+    L07: { n: 3, s: ['titoSleepy', 'mug', 'titoSleepy'], v: { mug: { stir: 0, steam: 1 } }, hud: [[0, 'thought', 'moon', 780, 520], [1, 'tag', 'À NOITE', { dot: 'blue', sub: 'antes de dormir', size: 44, y: 460 }]] },
+    L08: { n: 2, s: ['dripS', 'honeyOpen'], v: { dip: { vis: 1 }, lemonH: { vis: 0 } }, hud: [[0, 'qty', { amount: '1 COLHER DE CHÁ', note: 'só de mel, antes de dormir', y: 480, color: 'gold' }]] },
+    L09: { n: 3, s: ['baby', 'honeyL', 'tito'], v: { dip: { vis: 0 }, honey: { open: 0 }, baby: { vis: 1 } }, hud: [[0, 'caution', { title: 'ATENÇÃO', items: ['Mel NUNCA para bebê com menos de 1 ano (botulismo)', 'Diabetes: cuidado, o mel tem açúcar', 'Limão pode dar azia em quem tem refluxo'], y: 360 }], [0, 'mark', 'no', 800, 1000, 60]] },
+    L10: { n: 2, s: ['titoCough', 'tito'], v: { baby: { vis: 0 } }, hud: [[0, 'caution', { title: 'PROCURE UM MÉDICO', items: ['Tosse com febre ou falta de ar', 'Tosse que não melhora em poucos dias'], y: 400 }], [1, 'disc', { y: 1500 }]] },
+    L11: { n: 1, s: ['kit'], hud: [[0, 'quiz', { q: 'Mel pode para um bebê de 8 meses?', opts: ['Pode', 'Não pode', 'Só uma colherinha'], ans: 1, reveal: 10.4, y: 300, color: 'orange' }]], sfx: [[0, 'ding', 10.5, { level: 0.2 }]] },
+    L12: { n: 1, s: ['kit'], noSubs: true, hud: [[0, 'card', { name: 'MEL COM LIMÃO', para: 'tosse seca e garganta irritada', color: 'orange',
+      ingredients: ['1 copo (200 ml) de água morna', '1 colher de sopa de mel', 'Suco de ½ limão'],
+      steps: ['Água morna, sem ferver', 'Esprema meio limão no copo', 'Junte o mel e mexa bem', 'Beba aos poucos, ainda morno'], note: 'Bebê < 1 ano: nunca. Tosse com febre: médico',
+      at: [T(1), T(7), T(3), T(10), T(11), T(13), T(15)], y: 250 }]] },
+    L13: { n: 2, s: ['tito', 'kit'], hud: [[0, 'thought', 'q', 780, 520], [-1, 'chip', 'COMENTA AÍ', { delay: 0.5 }]] },
+  },
+  final: { s: 'kit', v: { mug: { fill: 0.8, mix: 1 } } },
+  music: [['L01', 'wonder', 0.55], ['L03', 'calm', 0.55], ['L09', 'tension', 0.45], ['L11', 'wonder', 0.6], ['L12', 'calm', 0.6]],
+});

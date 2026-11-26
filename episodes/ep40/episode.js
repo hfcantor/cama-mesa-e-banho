@@ -1,0 +1,65 @@
+// EP40 — Receita caseira #4: lavagem nasal
+import { buildFato } from '../../js/core/factEpisode.js';
+import { LINES } from './lines.js';
+
+const T = (word) => ({ line: 'L12', word, offset: 0 });
+export default buildFato({
+  id: 'ep40', titulo: 'Lavagem nasal caseira', lines: LINES, defaultSubject: 'kit',
+  fato: {
+    sky: 'bath', ground: 'wood', seed: 10, center: [0, 0, 0],
+    props: [
+      { id: 'wall', type: 'wall', pos: [0, 0, -10], o: { tile: '#e4f0f5', grout: '#b7cdd6', windowX: -9, shelfX: 9 } },
+      { id: 'glass', type: 'vessel', pos: [0, 0, 0], s: 1.6, o: { kind: 'glass', c0: '#8fd3f2', c1: '#c4e6ee' }, v: { fill: 0.8 } },
+      { id: 'stove', type: 'stove', pos: [6.4, 0, -3.2], s: 1.3, hide: true },
+      { id: 'pot', type: 'vessel', pos: [5.1, 1.3, -3.8], s: 1.3, o: { kind: 'pot', c0: '#8fd3f2' }, v: { fill: 0.6, boil: 1, steam: 1, lid: 0 }, hide: true },
+      { id: 'jarSal', type: 'jar', pos: [-5.0, 0, 0.8], s: 1.2, o: { text: 'SAL', sub: 'SEM IODO', fill: '#f6f6f6', lid: '#3b82d6', labelBg: '#ffffff', labelFg: '#2f6fbf' } },
+      { id: 'spC', type: 'spoon', pos: [-5.0, 3.2, 1.2], s: 2.6, o: { kind: 'cha', powder: '#f4f4f4' }, v: { load: 0.5 }, hide: true },
+      { id: 'sq', type: 'squeeze', pos: [-3.0, 0, 0.6], s: 1.5, o: { text: 'SORO', sub: 'CASEIRO' }, v: { fill: 0 } },
+      { id: 'jug2', type: 'vessel', pos: [-2.15, 2.5, 0.6], s: 1.0, o: { kind: 'jug', c0: '#8fd3f2' }, v: { fill: 0.8, drop: 0.4 }, hide: true },
+      { id: 'faucet', type: 'faucet', pos: [8.6, 0, -1.5], s: 1.4, hide: true },
+      { id: 'sq2', type: 'squeeze', pos: [7.74, 1.35, 3.6], s: 0.55, o: { text: 'SORO', sub: 'CASEIRO' }, v: { fill: 0.8, tilt: -1.3 }, hide: true },
+      { id: 'tito', type: 'char', pos: [6.4, 0, 3.0], ry: 0, hide: true, o: { shirt: '#4a86d6', pants: '#3a4a8a' } },
+    ],
+  },
+  subjects: {
+    kit: { at: [-0.4, 2.2, 0], r: 7.4, az: 6, ly: 0.6, styles: ['wide', 'mid', 'high'] },
+    glass: { at: [0, 1.2, 0], r: 4.0, az: 8, ly: 0.8, styles: ['mid', 'close', 'low'] },
+    glassLow: { at: [0, 1.2, 0], r: 4.2, az: 8, ly: 1.6, styles: ['mid', 'close'] },
+    jarL: { at: [-5.0, 1.8, 0.8], r: 3.3, ly: 1.3, styles: ['mid', 'close'] },
+    sqL: { at: [-3.0, 2.0, 0.6], r: 3.6, ly: 1.3, styles: ['mid', 'close'] },
+    potS: { at: [5.1, 2.2, -3.8], r: 4.2, ly: 0.9, styles: ['mid', 'close', 'low'], v: { stove: { vis: 1, flame: 1 }, pot: { vis: 1 } } },
+    saltDump: { at: [0.3, 3.2, 0.4], r: 4.4, ly: 1.0, styles: ['mid', 'close', 'low'], v: { spC: { vis: 1, load: 0.5, dump: 1, x: 5.4, y: 0.4 }, jarSal: { open: 1 } } },
+    saltDumpW: { at: [0.3, 3.2, 0.4], r: 5.8, ly: 1.1, styles: ['mid', 'wide'], v: { spC: { vis: 1, load: 0.5, dump: 1, x: 5.4, y: 0.4 }, jarSal: { open: 1 } } },
+    stir: { at: [0, 1.2, 0], r: 4.0, ly: 1.0, styles: ['mid', 'close', 'high'], v: { glass: { stir: 1 }, spC: { vis: 0 }, jarSal: { open: 0 } } },
+    fillB: { at: [-2.6, 3.4, 0.6], r: 4.6, ly: 1.0, styles: ['mid', 'low', 'close'], v: { jug2: { vis: 1, stream: 1 } } },
+    tito: { at: [6.4, 1.25, 3.0], r: 1.3, az: -14, ly: 0.2, styles: ['close', 'mid'], v: { tito: { vis: 1, pose: { smile: 0.6 } } } },
+    titoNose: { at: [6.4, 1.5, 3.0], r: 1.3, az: -10, ly: 0.2, styles: ['close', 'mid'], v: { tito: { vis: 1, pose: { smile: 0, surprise: 0.3 }, rx: 0.35, rz: 0.3 } } },
+    titoNoseW: { at: [6.4, 1.5, 3.0], r: 1.8, az: -10, ly: 0.2, styles: ['mid', 'wide'], v: { tito: { vis: 1, pose: { smile: 0, surprise: 0.3 }, rx: 0.35, rz: 0.3 }, faucet: { vis: 1, flow: 0 } } },
+    squirt: { at: [6.6, 1.9, 3.4], r: 1.7, az: -8, ly: 0.2, styles: ['mid', 'close'], v: { tito: { vis: 1, pose: { smile: 0, surprise: 0.3 }, rx: 0.35, rz: 0.3 }, sq2: { vis: 1, squeeze: 1 } } },
+    squirtOther: { at: [6.0, 1.9, 3.4], r: 1.7, az: 8, ly: 0.2, styles: ['mid', 'close'], v: { tito: { vis: 1, pose: { smile: 0, surprise: 0.3 }, rx: 0.35, rz: -0.3 }, sq2: { vis: 1, squeeze: 1, x: -1.7 } } },
+    wash: { at: [8.0, 1.8, -1.0], r: 3.6, ly: 0.8, styles: ['mid', 'close'], v: { faucet: { vis: 1, flow: 1 }, sq2: { vis: 1, x: 0.6, y: 0.9, z: -4.6, tilt: 0.6, squeeze: 0 } } },
+  },
+  plan: {
+    L01: { n: 4, s: ['kit', 'tito', 'glass', 'tito'], v: { tito: { vis: 1 } }, hud: [[0, 'kicker', { n: 4, name: 'LAVAGEM NASAL', uses: ['NARIZ ENTUPIDO', 'RINITE E RESFRIADO', 'MAIS CONFORTO'], color: 'blue' }], [2, 'tag', 'O CUIDADO É COM A ÁGUA', { dot: 'red', size: 40, y: 480 }]] },
+    L02: { n: 4, s: ['glassLow', 'jarL', 'sqL', 'glassLow'], v: { tito: { vis: 0 } }, hud: [['*', 'ingr', [
+      { amt: '1 COPO', name: 'Água fervida e morna', sub: 'cerca de 250 ml', line: 'L02', word: 4 },
+      { amt: '½ COLHER', name: 'Sal sem iodo', sub: 'de chá, rasa', line: 'L02', word: 11 },
+      { amt: '1 FRASCO', name: 'Frasco limpo', sub: 'ou seringa sem agulha', line: 'L02', word: 19 }], { y: 450, color: 'blue' }]] },
+    L03: { n: 3, s: ['potS', 'potS', 'kit'], hud: [[0, 'step', { n: 1, total: 4, title: 'FERVA A ÁGUA', color: 'orange' }], [0, 'timer', { label: 'FERVURA', secs: 180, p0: 0, p1: 1, y: 600, color: 'orange' }], [2, 'tag', 'DEPOIS, DEIXE AMORNAR', { dot: 'blue', size: 44, y: 460 }]] },
+    L04: { n: 3, s: ['saltDump', 'saltDumpW', 'stir'], v: { stove: { vis: 0 }, pot: { vis: 0 } }, hud: [[0, 'step', { n: 2, total: 4, title: 'SAL SEM IODO', color: 'gold' }], [0, 'qty', { amount: '½ COLHER DE CHÁ', note: 'rasa, para 1 copo de água', y: 560, color: 'gold' }]] },
+    L05: { n: 2, s: ['fillB', 'sqL'], v: { glass: { stir: 0 } }, la: { 'sq.fill': [0, 0.85], 'jug2.tilt': [0.6, 1.0], 'jug2.fill': [0.8, 0.3] }, hud: [[0, 'step', { n: 3, total: 4, title: 'ENCHA O FRASCO', color: 'blue' }]] },
+    L06: { n: 3, s: ['titoNose', 'titoNoseW', 'titoNose'], v: { jug2: { vis: 0, stream: 0 }, sq2: { vis: 1 } }, hud: [[0, 'step', { n: 4, total: 4, title: 'INCLINE A CABEÇA', color: 'blue' }], [1, 'tag', 'ABRA A BOCA E RESPIRE POR ELA', { dot: 'blue', size: 38, y: 480 }]] },
+    L07: { n: 3, s: ['squirt', 'squirtOther', 'squirt'], hud: [[0, 'tag', 'JATO SUAVE', { dot: 'green', size: 46, y: 440 }], [1, 'tag', 'ENTRA POR UMA, SAI PELA OUTRA', { dot: 'blue', size: 38, y: 500 }]] },
+    L08: { n: 3, s: ['squirtOther', 'wash', 'wash'], hud: [[0, 'tag', 'TROQUE DE LADO', { dot: 'gold', size: 46, y: 440 }], [1, 'tag', 'LAVE O FRASCO E DEIXE SECAR', { dot: 'blue', size: 38, y: 420 }]] },
+    L09: { n: 3, s: ['wash', 'glass', 'tito'], v: { sq2: { vis: 0 }, tito: { vis: 1 } }, hud: [[0, 'caution', { title: 'NUNCA', items: ['Não use água direto da torneira', 'Só água fervida e morna ou soro de farmácia'], y: 380 }], [0, 'mark', 'no', 800, 1000, 60]] },
+    L10: { n: 3, s: ['titoNose', 'tito', 'tito'], v: { faucet: { vis: 0 } }, hud: [[0, 'caution', { title: 'PROCURE UM MÉDICO', items: ['Dor de cabeça forte ou febre', 'Nariz entupido por muitos dias', 'Bebê ou criança pequena: fale antes com o pediatra'], y: 360 }], [2, 'disc', { y: 1500 }]] },
+    L11: { n: 1, s: ['kit'], hud: [[0, 'quiz', { q: 'Qual água usar na lavagem nasal?', opts: ['Direto da torneira', 'Fervida e morna', 'Gelada'], ans: 1, reveal: 10.8, y: 300, color: 'blue' }]], sfx: [[0, 'ding', 10.9, { level: 0.2 }]] },
+    L12: { n: 1, s: ['kit'], noSubs: true, hud: [[0, 'card', { name: 'LAVAGEM NASAL', para: 'nariz entupido, resfriado, rinite', color: 'blue',
+      ingredients: ['1 copo de água fervida e morna', '½ colher de chá de sal sem iodo', '1 frasco limpo'],
+      steps: ['Ferva a água (3 min) e deixe amornar', 'Misture o sal e encha o frasco', 'Cabeça inclinada, boca aberta', 'Jato suave. Troque de lado. Lave o frasco'], note: 'Nunca água direto da torneira',
+      at: [T(2), T(5), T(14), T(16), T(17), T(19), T(20)], y: 250 }]] },
+    L13: { n: 2, s: ['tito', 'kit'], hud: [[0, 'thought', 'q', 780, 520], [-1, 'chip', 'COMENTA AÍ', { delay: 0.5 }]] },
+  },
+  final: { s: 'kit' },
+  music: [['L01', 'wonder', 0.55], ['L03', 'calm', 0.55], ['L09', 'tension', 0.45], ['L11', 'wonder', 0.6], ['L12', 'calm', 0.6]],
+});

@@ -5,6 +5,7 @@ import * as THREE from 'three';
 import { Character } from './characters.js';
 import { FX } from './fx.js';
 import { rng, glowTexture, earthTextures, atmosphere } from './textures.js';
+import { RECIPE_PROPS } from './receitaProps.js';
 
 const M = (c, o = {}) => new THREE.MeshStandardMaterial({ color: c, roughness: 0.8, metalness: 0, ...o });
 const EM = (c, i = 1, o = {}) => new THREE.MeshStandardMaterial({ color: c, emissive: c, emissiveIntensity: i, roughness: 0.6, ...o });
@@ -565,6 +566,7 @@ export const PROPS = {
     return { g: c.root, v: { pose: null, rx: 0 }, c, fresh: true, upd(v, t, dt) {
       if (this.fresh) { Object.keys(c.pose).forEach(k => { c.pose[k] = 0; }); c.pose.smile = 0.3; if (v.pose) Object.assign(c.pose, v.pose); c.cur = { ...c.pose }; this.fresh = false; }
       else if (v.pose) Object.assign(c.pose, v.pose);
-      c.update(t, dt); } };
+      c.update(t, dt); c.root.rotation.x = v.rx || 0; c.root.rotation.z = v.rz || 0; } };
   },
+  ...RECIPE_PROPS,
 };
