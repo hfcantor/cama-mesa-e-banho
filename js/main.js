@@ -10,6 +10,9 @@ import { VillageWorld } from './three/worlds/village.js';
 import { OceanWorld } from './three/worlds/ocean.js';
 import { LabWorld } from './three/worlds/lab.js';
 import { QuartoWorld } from './three/worlds/quarto.js';
+import { DormitorioWorld } from './three/worlds/dormitorio.js';
+import { BanheiroWorld } from './three/worlds/banheiro.js';
+import { CozinhaWorld } from './three/worlds/cozinha.js';
 import { exportMp4, canExportMp4 } from './core/exporter.js';
 
 const $ = (id) => document.getElementById(id);
@@ -43,7 +46,7 @@ async function boot() {
     app.stage = stage;
 
     const shared = {};
-    const worldDefs = [['space', SpaceWorld, 'Espaço: Terra e Lua'], ['village', VillageWorld, 'Vila do Tabocal'], ['ocean', OceanWorld, 'Litoral e marés'], ['lab', LabWorld, 'Observatório'], ['quarto', QuartoWorld, 'Quarto do Tito']];
+    const worldDefs = [['space', SpaceWorld, 'Espaço: Terra e Lua'], ['village', VillageWorld, 'Vila do Tabocal'], ['ocean', OceanWorld, 'Litoral e marés'], ['lab', LabWorld, 'Observatório'], ['quarto', QuartoWorld, 'Quarto do Tito'], ['dormitorio', DormitorioWorld, 'Dormitório'], ['banheiro', BanheiroWorld, 'Banheiro'], ['cozinha', CozinhaWorld, 'Cozinha']];
     const needed = new Set(episode.scenes.map(s => s.world));
     const worlds = {};
     let i = 0;

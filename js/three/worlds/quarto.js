@@ -11,7 +11,7 @@ const lerp = (a, b, k) => a + (b - a) * k;
 const clamp01 = (x) => Math.max(0, Math.min(1, x));
 const cv = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };
 const tex = (c, repeat) => { const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4; if (repeat) { t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(...repeat); } return t; };
-const mix = (a, b, k) => { const ca = new THREE.Color(a), cb = new THREE.Color(b); return '#' + ca.lerp(cb, k).getHexString(); };
+export const mix = (a, b, k) => { const ca = new THREE.Color(a), cb = new THREE.Color(b); return '#' + ca.lerp(cb, k).getHexString(); };
 
 export const BED_TOP = 0.62; // altura do lençol (m)
 const HEAD_Z = -2.42, FOOT_Z = -0.4;
@@ -19,7 +19,7 @@ const HEAD_Z = -2.42, FOOT_Z = -0.4;
 // ------------------------------------------------------------------
 //  Texturas procedurais
 // ------------------------------------------------------------------
-function woodTexture() {
+export function woodTexture() {
   const c = cv(512, 512), g = c.getContext('2d'), r = rng(5);
   const cols = ['#b98a5a', '#a87c4f', '#c4966a', '#ae8156'];
   for (let i = 0; i < 8; i++) {
@@ -30,7 +30,7 @@ function woodTexture() {
   return tex(c, [2, 2]);
 }
 
-function wallTexture() {
+export function wallTexture() {
   const c = cv(256, 512), g = c.getContext('2d');
   const gr = g.createLinearGradient(0, 0, 0, 512);
   gr.addColorStop(0, '#e9d5b4'); gr.addColorStop(0.6, '#e2c9a2'); gr.addColorStop(1, '#d1b48a');
@@ -127,7 +127,7 @@ function neonTexture() {
 const GC = {};
 const G = (k, f) => GC[k] || (GC[k] = f());
 
-function makeMite({ chef = false, napkin = false, bag = false, tint = '#cdbfe0' } = {}) {
+export function makeMite({ chef = false, napkin = false, bag = false, tint = '#cdbfe0' } = {}) {
   const root = new THREE.Group();
   const body = new THREE.Group(); root.add(body);
   const bm = M(tint, { roughness: 0.55 }), lm = M(mix(tint, '#4a3a6a', 0.55), { roughness: 0.6 });
@@ -174,14 +174,14 @@ function makeMite({ chef = false, napkin = false, bag = false, tint = '#cdbfe0' 
   return { root, body, legs, eyes, smile, open, hat, mood: 'happy', phase: Math.random() * 6 };
 }
 
-function moodMite(m, mood) {
+export function moodMite(m, mood) {
   m.mood = mood;
   m.smile.visible = mood === 'happy' || mood === 'sly';
   m.open.visible = mood === 'hungry' || mood === 'scared' || mood === 'cheer';
   m.open.scale.set(mood === 'cheer' ? 1.3 : 1, mood === 'cheer' ? 1.1 : 0.8, 0.4);
 }
 
-function animMite(m, t, dt, run = 0) {
+export function animMite(m, t, dt, run = 0) {
   const ph = m.phase + t * (3 + run * 9);
   m.body.position.y = Math.abs(Math.sin(ph)) * (0.012 + run * 0.03);
   m.body.rotation.z = Math.sin(ph) * (0.05 + run * 0.12);

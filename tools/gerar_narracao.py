@@ -98,7 +98,7 @@ async def main():
         if so and fid not in so:
             continue
         destino = pasta / f"{fid}.mp3"
-        rec = await gerar(fid, texto, voz, destino, DIRECAO_POR_EP.get(ep))
+        rec = await gerar(fid, texto, voz, destino, DIRECAO_POR_EP.get(ep, DIRECAO_EP02))
         al = alinhar(texto.split(), rec) if rec else None
         if al:
             timings[fid] = al

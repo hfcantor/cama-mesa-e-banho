@@ -36,6 +36,31 @@ Arquivos: `episodes/ep02/lines.js` (falas), `episodes/ep02/episode.js` (cenas e 
 
 A trilha de EP02 é definida em `musicPlan` (trechos longos), porque as cenas curtas reiniciariam a música a cada corte. A narração usa a mesma ferramenta do EP01: `python3 tools/gerar_narracao.py ep02`. Os números citados (um terço da vida, troca semanal) devem ser conferidos antes de publicar.
 
+## Episódios 03 a 12: "E se você nunca lavasse…?"
+
+Dez episódios no mesmo estilo do EP02, todos montados a partir de DADOS (roteiro + textos das etiquetas), em `episodes/epNN/`. O motor genérico fica em:
+
+- `js/core/templates.js`: o plano padrão de 16 falas e ~43 planos (gancho, três níveis com carimbo, LED, CTA no meio, rebobinar, checklist, pergunta final) e as câmeras geradas a partir do tecido em foco.
+- `js/core/levelEpisode.js`: transforma o plano em cenas ancoradas nas palavras da narração, com trilha e efeitos sonoros automáticos.
+- `js/three/worlds/room.js` (cômodo genérico), `dormitorio.js`, `banheiro.js`, `cozinha.js` (cenários) e `js/three/cloth.js` (tecidos que sujam e criam mofo conforme o nível).
+
+| EP | Tema | Cenário | Tecido em foco |
+|---|---|---|---|
+| 03 | Toalha de banho | banheiro | toalha |
+| 04 | Travesseiro | dormitório | fronha |
+| 05 | Edredom | dormitório | edredom |
+| 06 | Pano de prato | cozinha | pano |
+| 07 | Cortina do box | banheiro | cortina |
+| 08 | Tapete do banheiro | banheiro | tapete |
+| 09 | Toalha de mesa | cozinha | toalha de mesa |
+| 10 | Colchão | dormitório | colchão |
+| 11 | Esponja de cozinha | cozinha | esponja |
+| 12 | Guardanapo de pano | cozinha | guardanapo |
+
+Abra com `?ep=ep05` (e assim por diante). A narração de cada um vem de `python3 tools/gerar_narracao.py epNN`.
+
+**Conferir antes de publicar** (recomendações de higiene citadas na fala 14 de cada episódio): lavar toalha a cada 3 usos; travesseiro lavado a cada poucos meses e trocado quando amassado; edredom algumas vezes por ano; pano de prato trocado a cada 2 dias; cortina do box lavada 1 vez por mês; tapete do banheiro lavado toda semana; toalha de mesa lavada toda semana; colchão aspirado a cada poucos meses com protetor; esponja trocada a cada 1 a 2 semanas; guardanapo limpo a cada refeição. Os textos são qualitativos de propósito ("germes", "mofo"), sem números de bactérias.
+
 ## Como rodar
 
 Os módulos ES precisam de um servidor local; abrir o arquivo com `file://` não funciona.
